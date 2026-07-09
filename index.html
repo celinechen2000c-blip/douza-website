@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#dce8e7">
+  <title>Hi Bean</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <main class="container">
+    <!-- 背景画布 -->
+    <div id="large-header" class="large-header">
+      <canvas id="demo-canvas"></canvas>
+    </div>
+
+    <!-- 顶部时钟区 -->
+    <section class="top-section" aria-label="时钟">
+      <div class="time" id="time" data-hours="00" data-minutes="00" data-seconds="00">
+        <div class="digit"><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div></div>
+        <div class="digit"><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div></div>
+        <div class="digit"><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div></div>
+        <div class="digit"><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div></div>
+        <div class="digit"><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div></div>
+        <div class="digit"><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div></div>
+      </div>
+    </section>
+
+    <!-- 左侧按钮区 -->
+    <section class="left-section" aria-label="快捷操作">
+      <button class="image-button wechat-button" id="wechat-button" type="button" aria-label="显示微信二维码">
+        <img src="wechat.png" alt="微信" class="wechat-image">
+      </button>
+      <div class="qrcode-popup" id="wechat-qrcode-popup" aria-hidden="true">
+        <img src="二维码.jpg" alt="微信二维码" class="qrcode-image">
+      </div>
+    </section>
+
+    <!-- 右侧个人信息区 -->
+    <section class="right-section" aria-label="个人信息">
+      <div class="xingxiang-section">
+        <span class="name-text">Bean</span>
+        <img src="人物形象.png" alt="角色信息" class="role-image">
+      </div>
+      <a href="mailto:3307354127@qq.com" class="email-link">
+        <img src="https://www.wbaipm.com/images/email.png" alt="Email" class="email-image">
+      </a>
+    </section>
+
+    <!-- 中间导航链接区 -->
+    <section class="center-section" aria-label="个人链接">
+      <nav class="list-section">
+        <a href="https://www.yuque.com/hijiaobu" class="list-item" target="_blank" rel="noopener">
+          <img src="https://www.wbaipm.com/images/L.png" alt="" class="list-item-L">
+          <div class="list-item-C"></div>
+          <img src="https://www.wbaipm.com/images/R.png" alt="" class="list-item-R">
+          <span class="list-item-text">自媒体</span>
+        </a>
+        <a href="https://docs.qq.com/space/DSmhPdWptYVZTb0pX" class="list-item dark" target="_blank" rel="noopener">
+          <img src="https://www.wbaipm.com/images/zL.png" alt="" class="list-item-L">
+          <div class="list-item-C"></div>
+          <img src="https://www.wbaipm.com/images/zR.png" alt="" class="list-item-R">
+          <span class="list-item-text">资料库</span>
+        </a>
+        <a href="https://github.com/CrazyGoudanli" class="list-item" target="_blank" rel="noopener">
+          <img src="https://www.wbaipm.com/images/L.png" alt="" class="list-item-L">
+          <div class="list-item-C"></div>
+          <img src="https://www.wbaipm.com/images/R.png" alt="" class="list-item-R">
+          <span class="list-item-text">杂物间</span>
+        </a>
+        <a href="https://space.bilibili.com/1390202" class="list-item dark" target="_blank" rel="noopener">
+          <img src="https://www.wbaipm.com/images/L.png" alt="" class="list-item-L">
+          <div class="list-item-C"></div>
+          <img src="https://www.wbaipm.com/images/R.png" alt="" class="list-item-R">
+          <span class="list-item-text">创意工坊</span>
+        </a>
+      </nav>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

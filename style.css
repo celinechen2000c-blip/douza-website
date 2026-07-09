@@ -1,0 +1,873 @@
+/* ==================== 基础重置 ==================== */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ==================== Canvas 动画背景 ==================== */
+.large-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  background-image: url('https://www.wbaipm.com/images/demo-1-bg.jpg');
+  background-size: cover;
+  background-position: center center;
+  overflow: hidden;
+}
+
+#demo-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ==================== 顶部时钟区 ==================== */
+.top-section {
+  position: absolute;
+  z-index: 1;
+  inset: 0 0 auto;
+  height: 42.04%;
+}
+
+/* ==================== 3D 霓虹数字时钟 ==================== */
+:root {
+  --mouse-x: 0;
+  --mouse-y: 0;
+}
+
+.time {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  transform: translateZ(20px) rotateX(calc(var(--mouse-y) * 30deg)) rotateY(calc(var(--mouse-x) * 30deg));
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.digit {
+  height: 18vmin;
+  width: 9vmin;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  margin: 0 0.8rem;
+  transition: transform 1s cubic-bezier(0.5, 0, 0.5, 1);
+}
+
+.digit:hover {
+  transform: translateZ(2vmax);
+}
+
+/* 冒号分隔符 */
+.digit:nth-child(2),
+.digit:nth-child(4) {
+  margin-right: 2vmax;
+}
+
+.digit:nth-child(2):before,
+.digit:nth-child(2):after,
+.digit:nth-child(4):before,
+.digit:nth-child(4):after {
+  content: '';
+  background: white;
+  display: block;
+  position: absolute;
+  text-align: center;
+  width: 0.8vmax;
+  height: 0.8vmax;
+  left: calc(100% + 1.4vmax);
+  box-shadow: 0 0 0.6rem rgba(11, 253, 253, 0.8), 0 0 1.5rem rgba(11, 253, 253, 0.4), 0 0 3rem rgba(11, 253, 253, 0.15);
+  animation: clockPulse 1s alternate cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+.digit:nth-child(2):before,
+.digit:nth-child(4):before {
+  top: 30%;
+}
+
+.digit:nth-child(2):after,
+.digit:nth-child(4):after {
+  bottom: 30%;
+}
+
+@keyframes clockPulse {
+  to {
+    opacity: 0.5;
+  }
+}
+
+/* 数字段码 (7-segment) */
+.line {
+  position: absolute;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.line:before,
+.line:after {
+  content: '';
+  display: block;
+  position: absolute;
+  background: white;
+  transition: all 0.9s cubic-bezier(0.5, 0, 0.5, 1);
+  border-radius: 0.6ch;
+  box-shadow: 0 0 0.6rem rgba(11, 253, 253, 0.8), 0 0 1.5rem rgba(11, 253, 253, 0.4), 0 0 3rem rgba(11, 253, 253, 0.15), inset 0 0 0.08vmin #0BFDFD;
+}
+
+.line:after {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.1, 1);
+}
+
+/* 垂直段 (奇数) */
+.line:nth-child(2n-1) {
+  height: 50%;
+  width: 0.5vmin;
+}
+
+.line:nth-child(2n-1):before,
+.line:nth-child(2n-1):after {
+  height: calc(50% - 0.2vmin);
+  width: 100%;
+}
+
+.line:nth-child(2n-1):before {
+  top: 0.2vmin;
+  transform-origin: center top;
+}
+
+.line:nth-child(2n-1):after {
+  bottom: 0.2vmin;
+  transform-origin: center bottom;
+}
+
+/* 水平段 (偶数) */
+.line:nth-child(2n) {
+  width: 100%;
+  height: 0.5vmin;
+}
+
+.line:nth-child(2n):before,
+.line:nth-child(2n):after {
+  height: 100%;
+  width: calc(50% - 0.2vmin);
+}
+
+.line:nth-child(2n):before {
+  left: 0.2vmin;
+  transform-origin: left center;
+}
+
+.line:nth-child(2n):after {
+  right: 0.2vmin;
+  transform-origin: right center;
+}
+
+/* 7段位置: top-l, top-h, top-r, mid-h, bot-l, bot-r, bot-h */
+.line:nth-child(1) { top: 0; left: 0; }
+.line:nth-child(2) { top: 0; left: 0; }
+.line:nth-child(3) { top: 0; right: 0; }
+.line:nth-child(4) { top: 50%; left: 0; }
+.line:nth-child(5) { top: 50%; left: 0; }
+.line:nth-child(6) { bottom: 0; left: 0; }
+.line:nth-child(7) { top: 50%; right: 0; }
+
+/* ====== 数字 0 ====== */
+[data-hours^="0"] .digit:nth-child(1) :nth-child(4):before,
+[data-hours^="0"] .digit:nth-child(1) :nth-child(4):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-hours$="0"] .digit:nth-child(2) :nth-child(4):before,
+[data-hours$="0"] .digit:nth-child(2) :nth-child(4):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-minutes^="0"] .digit:nth-child(3) :nth-child(4):before,
+[data-minutes^="0"] .digit:nth-child(3) :nth-child(4):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-minutes$="0"] .digit:nth-child(4) :nth-child(4):before,
+[data-minutes$="0"] .digit:nth-child(4) :nth-child(4):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-seconds^="0"] .digit:nth-child(5) :nth-child(4):before,
+[data-seconds^="0"] .digit:nth-child(5) :nth-child(4):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-seconds$="0"] .digit:nth-child(6) :nth-child(4):before,
+[data-seconds$="0"] .digit:nth-child(6) :nth-child(4):after { opacity: 0.12; transform: translateZ(-4vmax); }
+
+/* ====== 数字 1 ====== */
+[data-hours^="1"] .digit:nth-child(1) :nth-child(1):before,
+[data-hours^="1"] .digit:nth-child(1) :nth-child(1):after,
+[data-hours^="1"] .digit:nth-child(1) :nth-child(2):before,
+[data-hours^="1"] .digit:nth-child(1) :nth-child(2):after,
+[data-hours^="1"] .digit:nth-child(1) :nth-child(4):before,
+[data-hours^="1"] .digit:nth-child(1) :nth-child(4):after,
+[data-hours^="1"] .digit:nth-child(1) :nth-child(5):before,
+[data-hours^="1"] .digit:nth-child(1) :nth-child(5):after,
+[data-hours^="1"] .digit:nth-child(1) :nth-child(6):before,
+[data-hours^="1"] .digit:nth-child(1) :nth-child(6):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-hours$="1"] .digit:nth-child(2) :nth-child(1):before,
+[data-hours$="1"] .digit:nth-child(2) :nth-child(1):after,
+[data-hours$="1"] .digit:nth-child(2) :nth-child(2):before,
+[data-hours$="1"] .digit:nth-child(2) :nth-child(2):after,
+[data-hours$="1"] .digit:nth-child(2) :nth-child(4):before,
+[data-hours$="1"] .digit:nth-child(2) :nth-child(4):after,
+[data-hours$="1"] .digit:nth-child(2) :nth-child(5):before,
+[data-hours$="1"] .digit:nth-child(2) :nth-child(5):after,
+[data-hours$="1"] .digit:nth-child(2) :nth-child(6):before,
+[data-hours$="1"] .digit:nth-child(2) :nth-child(6):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-minutes^="1"] .digit:nth-child(3) :nth-child(1):before,
+[data-minutes^="1"] .digit:nth-child(3) :nth-child(1):after,
+[data-minutes^="1"] .digit:nth-child(3) :nth-child(2):before,
+[data-minutes^="1"] .digit:nth-child(3) :nth-child(2):after,
+[data-minutes^="1"] .digit:nth-child(3) :nth-child(4):before,
+[data-minutes^="1"] .digit:nth-child(3) :nth-child(4):after,
+[data-minutes^="1"] .digit:nth-child(3) :nth-child(5):before,
+[data-minutes^="1"] .digit:nth-child(3) :nth-child(5):after,
+[data-minutes^="1"] .digit:nth-child(3) :nth-child(6):before,
+[data-minutes^="1"] .digit:nth-child(3) :nth-child(6):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-minutes$="1"] .digit:nth-child(4) :nth-child(1):before,
+[data-minutes$="1"] .digit:nth-child(4) :nth-child(1):after,
+[data-minutes$="1"] .digit:nth-child(4) :nth-child(2):before,
+[data-minutes$="1"] .digit:nth-child(4) :nth-child(2):after,
+[data-minutes$="1"] .digit:nth-child(4) :nth-child(4):before,
+[data-minutes$="1"] .digit:nth-child(4) :nth-child(4):after,
+[data-minutes$="1"] .digit:nth-child(4) :nth-child(5):before,
+[data-minutes$="1"] .digit:nth-child(4) :nth-child(5):after,
+[data-minutes$="1"] .digit:nth-child(4) :nth-child(6):before,
+[data-minutes$="1"] .digit:nth-child(4) :nth-child(6):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-seconds^="1"] .digit:nth-child(5) :nth-child(1):before,
+[data-seconds^="1"] .digit:nth-child(5) :nth-child(1):after,
+[data-seconds^="1"] .digit:nth-child(5) :nth-child(2):before,
+[data-seconds^="1"] .digit:nth-child(5) :nth-child(2):after,
+[data-seconds^="1"] .digit:nth-child(5) :nth-child(4):before,
+[data-seconds^="1"] .digit:nth-child(5) :nth-child(4):after,
+[data-seconds^="1"] .digit:nth-child(5) :nth-child(5):before,
+[data-seconds^="1"] .digit:nth-child(5) :nth-child(5):after,
+[data-seconds^="1"] .digit:nth-child(5) :nth-child(6):before,
+[data-seconds^="1"] .digit:nth-child(5) :nth-child(6):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-seconds$="1"] .digit:nth-child(6) :nth-child(1):before,
+[data-seconds$="1"] .digit:nth-child(6) :nth-child(1):after,
+[data-seconds$="1"] .digit:nth-child(6) :nth-child(2):before,
+[data-seconds$="1"] .digit:nth-child(6) :nth-child(2):after,
+[data-seconds$="1"] .digit:nth-child(6) :nth-child(4):before,
+[data-seconds$="1"] .digit:nth-child(6) :nth-child(4):after,
+[data-seconds$="1"] .digit:nth-child(6) :nth-child(5):before,
+[data-seconds$="1"] .digit:nth-child(6) :nth-child(5):after,
+[data-seconds$="1"] .digit:nth-child(6) :nth-child(6):before,
+[data-seconds$="1"] .digit:nth-child(6) :nth-child(6):after { opacity: 0.12; transform: translateZ(-4vmax); }
+
+/* ====== 数字 2 ====== */
+[data-hours^="2"] .digit:nth-child(1) :nth-child(1):before,
+[data-hours^="2"] .digit:nth-child(1) :nth-child(1):after,
+[data-hours^="2"] .digit:nth-child(1) :nth-child(7):before,
+[data-hours^="2"] .digit:nth-child(1) :nth-child(7):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-hours$="2"] .digit:nth-child(2) :nth-child(1):before,
+[data-hours$="2"] .digit:nth-child(2) :nth-child(1):after,
+[data-hours$="2"] .digit:nth-child(2) :nth-child(7):before,
+[data-hours$="2"] .digit:nth-child(2) :nth-child(7):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-minutes^="2"] .digit:nth-child(3) :nth-child(1):before,
+[data-minutes^="2"] .digit:nth-child(3) :nth-child(1):after,
+[data-minutes^="2"] .digit:nth-child(3) :nth-child(7):before,
+[data-minutes^="2"] .digit:nth-child(3) :nth-child(7):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-minutes$="2"] .digit:nth-child(4) :nth-child(1):before,
+[data-minutes$="2"] .digit:nth-child(4) :nth-child(1):after,
+[data-minutes$="2"] .digit:nth-child(4) :nth-child(7):before,
+[data-minutes$="2"] .digit:nth-child(4) :nth-child(7):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-seconds^="2"] .digit:nth-child(5) :nth-child(1):before,
+[data-seconds^="2"] .digit:nth-child(5) :nth-child(1):after,
+[data-seconds^="2"] .digit:nth-child(5) :nth-child(7):before,
+[data-seconds^="2"] .digit:nth-child(5) :nth-child(7):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-seconds$="2"] .digit:nth-child(6) :nth-child(1):before,
+[data-seconds$="2"] .digit:nth-child(6) :nth-child(1):after,
+[data-seconds$="2"] .digit:nth-child(6) :nth-child(7):before,
+[data-seconds$="2"] .digit:nth-child(6) :nth-child(7):after { opacity: 0.12; transform: translateZ(-4vmax); }
+
+/* ====== 数字 3 ====== */
+[data-hours$="3"] .digit:nth-child(2) :nth-child(1):before,
+[data-hours$="3"] .digit:nth-child(2) :nth-child(1):after,
+[data-hours$="3"] .digit:nth-child(2) :nth-child(5):before,
+[data-hours$="3"] .digit:nth-child(2) :nth-child(5):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-minutes^="3"] .digit:nth-child(3) :nth-child(1):before,
+[data-minutes^="3"] .digit:nth-child(3) :nth-child(1):after,
+[data-minutes^="3"] .digit:nth-child(3) :nth-child(5):before,
+[data-minutes^="3"] .digit:nth-child(3) :nth-child(5):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-minutes$="3"] .digit:nth-child(4) :nth-child(1):before,
+[data-minutes$="3"] .digit:nth-child(4) :nth-child(1):after,
+[data-minutes$="3"] .digit:nth-child(4) :nth-child(5):before,
+[data-minutes$="3"] .digit:nth-child(4) :nth-child(5):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-seconds^="3"] .digit:nth-child(5) :nth-child(1):before,
+[data-seconds^="3"] .digit:nth-child(5) :nth-child(1):after,
+[data-seconds^="3"] .digit:nth-child(5) :nth-child(5):before,
+[data-seconds^="3"] .digit:nth-child(5) :nth-child(5):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-seconds$="3"] .digit:nth-child(6) :nth-child(1):before,
+[data-seconds$="3"] .digit:nth-child(6) :nth-child(1):after,
+[data-seconds$="3"] .digit:nth-child(6) :nth-child(5):before,
+[data-seconds$="3"] .digit:nth-child(6) :nth-child(5):after { opacity: 0.12; transform: translateZ(-4vmax); }
+
+/* ====== 数字 4 ====== */
+[data-hours$="4"] .digit:nth-child(2) :nth-child(2):before,
+[data-hours$="4"] .digit:nth-child(2) :nth-child(2):after,
+[data-hours$="4"] .digit:nth-child(2) :nth-child(5):before,
+[data-hours$="4"] .digit:nth-child(2) :nth-child(5):after,
+[data-hours$="4"] .digit:nth-child(2) :nth-child(6):before,
+[data-hours$="4"] .digit:nth-child(2) :nth-child(6):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-minutes^="4"] .digit:nth-child(3) :nth-child(2):before,
+[data-minutes^="4"] .digit:nth-child(3) :nth-child(2):after,
+[data-minutes^="4"] .digit:nth-child(3) :nth-child(5):before,
+[data-minutes^="4"] .digit:nth-child(3) :nth-child(5):after,
+[data-minutes^="4"] .digit:nth-child(3) :nth-child(6):before,
+[data-minutes^="4"] .digit:nth-child(3) :nth-child(6):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-minutes$="4"] .digit:nth-child(4) :nth-child(2):before,
+[data-minutes$="4"] .digit:nth-child(4) :nth-child(2):after,
+[data-minutes$="4"] .digit:nth-child(4) :nth-child(5):before,
+[data-minutes$="4"] .digit:nth-child(4) :nth-child(5):after,
+[data-minutes$="4"] .digit:nth-child(4) :nth-child(6):before,
+[data-minutes$="4"] .digit:nth-child(4) :nth-child(6):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-seconds^="4"] .digit:nth-child(5) :nth-child(2):before,
+[data-seconds^="4"] .digit:nth-child(5) :nth-child(2):after,
+[data-seconds^="4"] .digit:nth-child(5) :nth-child(5):before,
+[data-seconds^="4"] .digit:nth-child(5) :nth-child(5):after,
+[data-seconds^="4"] .digit:nth-child(5) :nth-child(6):before,
+[data-seconds^="4"] .digit:nth-child(5) :nth-child(6):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-seconds$="4"] .digit:nth-child(6) :nth-child(2):before,
+[data-seconds$="4"] .digit:nth-child(6) :nth-child(2):after,
+[data-seconds$="4"] .digit:nth-child(6) :nth-child(5):before,
+[data-seconds$="4"] .digit:nth-child(6) :nth-child(5):after,
+[data-seconds$="4"] .digit:nth-child(6) :nth-child(6):before,
+[data-seconds$="4"] .digit:nth-child(6) :nth-child(6):after { opacity: 0.12; transform: translateZ(-4vmax); }
+
+/* ====== 数字 5 ====== */
+[data-hours$="5"] .digit:nth-child(2) :nth-child(3):before,
+[data-hours$="5"] .digit:nth-child(2) :nth-child(3):after,
+[data-hours$="5"] .digit:nth-child(2) :nth-child(5):before,
+[data-hours$="5"] .digit:nth-child(2) :nth-child(5):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-minutes^="5"] .digit:nth-child(3) :nth-child(3):before,
+[data-minutes^="5"] .digit:nth-child(3) :nth-child(3):after,
+[data-minutes^="5"] .digit:nth-child(3) :nth-child(5):before,
+[data-minutes^="5"] .digit:nth-child(3) :nth-child(5):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-minutes$="5"] .digit:nth-child(4) :nth-child(3):before,
+[data-minutes$="5"] .digit:nth-child(4) :nth-child(3):after,
+[data-minutes$="5"] .digit:nth-child(4) :nth-child(5):before,
+[data-minutes$="5"] .digit:nth-child(4) :nth-child(5):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-seconds^="5"] .digit:nth-child(5) :nth-child(3):before,
+[data-seconds^="5"] .digit:nth-child(5) :nth-child(3):after,
+[data-seconds^="5"] .digit:nth-child(5) :nth-child(5):before,
+[data-seconds^="5"] .digit:nth-child(5) :nth-child(5):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-seconds$="5"] .digit:nth-child(6) :nth-child(3):before,
+[data-seconds$="5"] .digit:nth-child(6) :nth-child(3):after,
+[data-seconds$="5"] .digit:nth-child(6) :nth-child(5):before,
+[data-seconds$="5"] .digit:nth-child(6) :nth-child(5):after { opacity: 0.12; transform: translateZ(-4vmax); }
+
+/* ====== 数字 6 ====== */
+[data-hours$="6"] .digit:nth-child(2) :nth-child(3):before,
+[data-hours$="6"] .digit:nth-child(2) :nth-child(3):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-minutes^="6"] .digit:nth-child(3) :nth-child(3):before,
+[data-minutes^="6"] .digit:nth-child(3) :nth-child(3):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-minutes$="6"] .digit:nth-child(4) :nth-child(3):before,
+[data-minutes$="6"] .digit:nth-child(4) :nth-child(3):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-seconds^="6"] .digit:nth-child(5) :nth-child(3):before,
+[data-seconds^="6"] .digit:nth-child(5) :nth-child(3):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-seconds$="6"] .digit:nth-child(6) :nth-child(3):before,
+[data-seconds$="6"] .digit:nth-child(6) :nth-child(3):after { opacity: 0.12; transform: translateZ(-4vmax); }
+
+/* ====== 数字 7 ====== */
+[data-hours$="7"] .digit:nth-child(2) :nth-child(1):before,
+[data-hours$="7"] .digit:nth-child(2) :nth-child(1):after,
+[data-hours$="7"] .digit:nth-child(2) :nth-child(4):before,
+[data-hours$="7"] .digit:nth-child(2) :nth-child(4):after,
+[data-hours$="7"] .digit:nth-child(2) :nth-child(5):before,
+[data-hours$="7"] .digit:nth-child(2) :nth-child(5):after,
+[data-hours$="7"] .digit:nth-child(2) :nth-child(6):before,
+[data-hours$="7"] .digit:nth-child(2) :nth-child(6):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-minutes^="7"] .digit:nth-child(3) :nth-child(1):before,
+[data-minutes^="7"] .digit:nth-child(3) :nth-child(1):after,
+[data-minutes^="7"] .digit:nth-child(3) :nth-child(4):before,
+[data-minutes^="7"] .digit:nth-child(3) :nth-child(4):after,
+[data-minutes^="7"] .digit:nth-child(3) :nth-child(5):before,
+[data-minutes^="7"] .digit:nth-child(3) :nth-child(5):after,
+[data-minutes^="7"] .digit:nth-child(3) :nth-child(6):before,
+[data-minutes^="7"] .digit:nth-child(3) :nth-child(6):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-minutes$="7"] .digit:nth-child(4) :nth-child(1):before,
+[data-minutes$="7"] .digit:nth-child(4) :nth-child(1):after,
+[data-minutes$="7"] .digit:nth-child(4) :nth-child(4):before,
+[data-minutes$="7"] .digit:nth-child(4) :nth-child(4):after,
+[data-minutes$="7"] .digit:nth-child(4) :nth-child(5):before,
+[data-minutes$="7"] .digit:nth-child(4) :nth-child(5):after,
+[data-minutes$="7"] .digit:nth-child(4) :nth-child(6):before,
+[data-minutes$="7"] .digit:nth-child(4) :nth-child(6):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-seconds^="7"] .digit:nth-child(5) :nth-child(1):before,
+[data-seconds^="7"] .digit:nth-child(5) :nth-child(1):after,
+[data-seconds^="7"] .digit:nth-child(5) :nth-child(4):before,
+[data-seconds^="7"] .digit:nth-child(5) :nth-child(4):after,
+[data-seconds^="7"] .digit:nth-child(5) :nth-child(5):before,
+[data-seconds^="7"] .digit:nth-child(5) :nth-child(5):after,
+[data-seconds^="7"] .digit:nth-child(5) :nth-child(6):before,
+[data-seconds^="7"] .digit:nth-child(5) :nth-child(6):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-seconds$="7"] .digit:nth-child(6) :nth-child(1):before,
+[data-seconds$="7"] .digit:nth-child(6) :nth-child(1):after,
+[data-seconds$="7"] .digit:nth-child(6) :nth-child(4):before,
+[data-seconds$="7"] .digit:nth-child(6) :nth-child(4):after,
+[data-seconds$="7"] .digit:nth-child(6) :nth-child(5):before,
+[data-seconds$="7"] .digit:nth-child(6) :nth-child(5):after,
+[data-seconds$="7"] .digit:nth-child(6) :nth-child(6):before,
+[data-seconds$="7"] .digit:nth-child(6) :nth-child(6):after { opacity: 0.12; transform: translateZ(-4vmax); }
+
+/* 数字 8 — 全部显示，无隐藏段 */
+
+/* ====== 数字 9 ====== */
+[data-hours$="9"] .digit:nth-child(2) :nth-child(5):before,
+[data-hours$="9"] .digit:nth-child(2) :nth-child(5):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-minutes^="9"] .digit:nth-child(3) :nth-child(5):before,
+[data-minutes^="9"] .digit:nth-child(3) :nth-child(5):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-minutes$="9"] .digit:nth-child(4) :nth-child(5):before,
+[data-minutes$="9"] .digit:nth-child(4) :nth-child(5):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-seconds^="9"] .digit:nth-child(5) :nth-child(5):before,
+[data-seconds^="9"] .digit:nth-child(5) :nth-child(5):after { opacity: 0.12; transform: translateZ(-4vmax); }
+[data-seconds$="9"] .digit:nth-child(6) :nth-child(5):before,
+[data-seconds$="9"] .digit:nth-child(6) :nth-child(5):after { opacity: 0.12; transform: translateZ(-4vmax); }
+
+/* ==================== 左侧按钮区 ==================== */
+.left-section {
+  position: absolute;
+  z-index: 1;
+  top: 42.04%;
+  left: 0;
+  width: 26.67%;
+  height: 48.79%;
+}
+
+.image-button {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.wechat-button {
+  width: 18.35vw;
+  height: 10.76vh;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-top: 17.40vh;
+}
+
+.wechat-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.qrcode-popup {
+  position: absolute;
+  display: none;
+  right: 0;
+  top: 50%;
+  transform: translateY(-100%);
+  margin-top: 9.72vh;
+  z-index: 1000;
+}
+
+.qrcode-popup.visible {
+  display: block;
+}
+
+.qrcode-image {
+  display: block;
+  width: 18.35vw;
+  height: auto;
+}
+
+/* ==================== 右侧个人信息区 ==================== */
+.right-section {
+  position: absolute;
+  z-index: 1;
+  top: 42.04%;
+  right: -0.11px;
+  width: 25.71%;
+  height: 48.79%;
+}
+
+.xingxiang-section {
+  position: absolute;
+  width: 11.04vw;
+  height: 39.71vh;
+  left: 4.24vw;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-top: -10.61vh;
+}
+
+.name-text {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-family: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-size: clamp(22px, 2.86vw, 42px);
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.25), 0 0 30px rgba(255, 255, 255, 0.1);
+  -webkit-font-smoothing: antialiased;
+}
+
+.role-image {
+  position: absolute;
+  width: 8.66vw;
+  height: auto;
+  max-height: 32.87vh;
+  left: 1.19vw;
+  top: 7.44vh;
+  object-fit: contain;
+}
+
+.email-link {
+  position: absolute;
+  width: 19.51vw;
+  height: 10.76vh;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-top: 17.40vh;
+}
+
+.email-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ==================== 底部装饰区 ==================== */
+.bottom-section {
+  position: absolute;
+  z-index: 1;
+  inset: auto 0 0;
+  height: 9.17%;
+}
+
+.zuuoxia-image {
+  position: absolute;
+  width: 15.13vw;
+  height: 5.65vh;
+  left: 1.21vw;
+  top: 1.08vh;
+  object-fit: cover;
+}
+
+.youxia-image {
+  position: absolute;
+  width: 9.83vw;
+  height: 5.65vh;
+  right: 1.20vw;
+  top: 1.08vh;
+  object-fit: cover;
+}
+
+/* ==================== 中间导航链接区 ==================== */
+.center-section {
+  position: absolute;
+  z-index: 1;
+  top: 42.05%;
+  bottom: 9.17%;
+  left: 26.67%;
+  right: 25.71%;
+}
+
+.list-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.69vh;
+  align-items: center;
+  justify-content: flex-end;
+  position: absolute;
+  left: 6.60vw;
+  right: 7.56vw;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-top: -0.22vh;
+}
+
+.list-item {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 10.97vh;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.list-item:hover,
+.list-item:focus-visible {
+  transform: scale(1.05);
+}
+
+.list-item:active {
+  transform: scale(0.7);
+  transition-duration: 0.1s;
+}
+
+.list-item-L,
+.list-item-R {
+  position: absolute;
+  height: 10.97vh;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0.63vw;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.list-item-L {
+  left: 0;
+}
+
+.list-item-R {
+  right: 0.02vw;
+}
+
+.list-item-C {
+  position: absolute;
+  height: 10.97vh;
+  left: 0.63vw;
+  right: 0.64vw;
+  top: 50%;
+  transform: translateY(-50%);
+  background: url('https://www.wbaipm.com/images/C.png') repeat top left / 0.61vw 10.97vh;
+}
+
+.list-item.dark .list-item-C {
+  background-image: url('https://www.wbaipm.com/images/zC.png');
+}
+
+.list-item-text {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  font-family: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-size: clamp(18px, 2.24vw, 32px);
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  -webkit-font-smoothing: antialiased;
+}
+
+.list-item.dark .list-item-text {
+  color: #fff;
+}
+
+/* ==================== 移动端适配 ==================== */
+@media (max-width: 768px) {
+  body {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .container {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .large-header {
+    position: fixed;
+  }
+
+  .top-section {
+    position: relative;
+    height: 25vh;
+    min-height: 180px;
+  }
+
+  .digit {
+    height: 10vmin;
+    width: 5vmin;
+    margin: 0 0.4rem;
+  }
+
+  .digit:nth-child(2),
+  .digit:nth-child(4) {
+    margin-right: 1.5vmax;
+  }
+
+  .digit:nth-child(2):before,
+  .digit:nth-child(2):after,
+  .digit:nth-child(4):before,
+  .digit:nth-child(4):after {
+    width: 0.5vmax;
+    height: 0.5vmax;
+    left: calc(100% + 1vmax);
+  }
+
+  .line:nth-child(2n-1) { width: 0.35vmin; }
+  .line:nth-child(2n) { height: 0.35vmin; }
+
+  .left-section {
+    position: relative;
+    top: auto;
+    width: 100%;
+    height: auto;
+    min-height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4vw;
+    padding: 10px 0;
+  }
+
+  .wechat-button {
+    position: static;
+    transform: none;
+    margin-top: 0;
+    width: 35vw;
+    height: auto;
+  }
+
+  .right-section {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0;
+  }
+
+  .xingxiang-section {
+    position: static;
+    transform: none;
+    margin-top: 0;
+    width: auto;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .name-text {
+    position: static;
+    font-size: clamp(18px, 6vw, 32px);
+  }
+
+  .role-image {
+    position: static;
+    width: 28vw;
+    height: auto;
+    margin-top: 5px;
+  }
+
+  .email-link {
+    position: static;
+    transform: none;
+    margin-top: 10px;
+    width: 50vw;
+    height: auto;
+  }
+
+  .center-section {
+    position: relative;
+    top: auto;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    width: 100%;
+    padding: 10px 5vw;
+  }
+
+  .list-section {
+    position: static;
+    transform: none;
+    margin-top: 0;
+    left: auto;
+    right: auto;
+    gap: 1vh;
+  }
+
+  .list-item {
+    height: 14vw;
+    max-height: 60px;
+  }
+
+  .list-item-L,
+  .list-item-R {
+    height: 14vw;
+    max-height: 60px;
+    width: 1.5vw;
+    max-width: 6px;
+  }
+
+  .list-item-C {
+    height: 14vw;
+    max-height: 60px;
+    left: 1.5vw;
+    right: 1.7vw;
+    background-size: 1.2vw 14vw;
+  }
+
+  .list-item-text {
+    font-size: clamp(14px, 4vw, 20px);
+  }
+
+  .bottom-section {
+    position: relative;
+    height: auto;
+    min-height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 5vw;
+  }
+
+  .zuuoxia-image,
+  .youxia-image {
+    position: static;
+    width: 30vw;
+    max-width: 150px;
+    height: auto;
+  }
+
+  .qrcode-popup {
+    right: 5vw;
+    top: auto;
+    bottom: 100%;
+    transform: none;
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+
+  .qrcode-image {
+    width: 40vw;
+    max-width: 200px;
+  }
+}
+
+/* ==================== 减少动画偏好 ==================== */
+@media (prefers-reduced-motion: reduce) {
+  .list-item {
+    transition: none;
+  }
+}
