@@ -278,4 +278,258 @@
       shiftPoint(points[i]);
     }
   }
+
+  // ==================== 聊天面板交互 ====================
+  var chatTrigger = document.getElementById('agent-chat-trigger');
+  var chatPanel = document.getElementById('chat-panel');
+  var chatOverlay = document.getElementById('chat-overlay');
+  var chatCloseBtn = document.getElementById('chat-panel-close');
+  var chatMessages = document.getElementById('chat-messages');
+  var chatInput = document.getElementById('chat-input');
+  var chatSend = document.getElementById('chat-send');
+  var isChatOpen = false;
+  var conversationId = '';
+  var isStreaming = false;
+
+  // Dify API 配置
+  var API_URL = 'https://api.dify.ai/v1/chat-messages';
+  var API_KEY = 'app-vjTvHKAgnDwU8kTf0d2yldqK';
+
+  function openPanel() {
+    if (isChatOpen) return;
+    isChatOpen = true;
+    chatPanel.classList.add('visible');
+    chatOverlay.classList.add('visible');
+    chatPanel.setAttribute('aria-hidden', 'false');
+    chatOverlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    setTimeout(function () { chatInput.focus(); }, 400);
+  }
+
+  function closePanel() {
+    if (!isChatOpen) return;
+    if (document.activeElement) document.activeElement.blur();
+    isChatOpen = false;
+    chatPanel.classList.remove('visible');
+    chatOverlay.classList.remove('visible');
+    chatPanel.setAttribute('aria-hidden', 'true');
+    chatOverlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    // 关闭时重置对话
+    conversationId = '';
+  }
+
+  // ---- 消息渲染 ----
+
+  function addMessage(role, text) {
+    var bubble = document.createElement('div');
+    bubble.className = 'chat-bubble ' + role;
+
+    // 只有 Agent 消息显示头像
+    if (role !== 'user') {
+      var avatar = document.createElement('img');
+      avatar.className = 'chat-bubble-avatar';
+      avatar.src = '人物形象.png';
+      avatar.alt = '';
+      bubble.appendChild(avatar);
+    }
+
+    var textEl = document.createElement('div');
+    textEl.className = 'chat-bubble-text';
+    textEl.textContent = text;
+
+    bubble.appendChild(textEl);
+    chatMessages.appendChild(bubble);
+    scrollToBottom();
+    return textEl;
+  }
+
+  function addTypingIndicator() {
+    var bubble = document.createElement('div');
+    bubble.className = 'chat-bubble agent';
+    bubble.id = 'typing-indicator';
+
+    var avatar = document.createElement('img');
+    avatar.className = 'chat-bubble-avatar';
+    avatar.src = '人物形象.png';
+    avatar.alt = '';
+
+    var dots = document.createElement('div');
+    dots.className = 'chat-bubble-text';
+    dots.innerHTML = '<div class="chat-typing"><span></span><span></span><span></span></div>';
+
+    bubble.appendChild(avatar);
+    bubble.appendChild(dots);
+    chatMessages.appendChild(bubble);
+    scrollToBottom();
+  }
+
+  function removeTypingIndicator() {
+    var el = document.getElementById('typing-indicator');
+    if (el) el.remove();
+  }
+
+  function scrollToBottom() {
+    requestAnimationFrame(function () {
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+  }
+
+  // ---- 发送消息 ----
+
+  function sendMessage() {
+    if (isStreaming) return;
+    var text = chatInput.value.trim();
+    if (!text) return;
+
+    // 显示用户气泡
+    addMessage('user', text);
+    chatInput.value = '';
+    chatInput.style.height = 'auto';
+    setSendingState(true);
+
+    // 显示打字动画
+    addTypingIndicator();
+
+    // 调用 API
+    var body = {
+      inputs: {},
+      query: text,
+      response_mode: 'streaming',
+      user: 'website-visitor'
+    };
+    if (conversationId) {
+      body.conversation_id = conversationId;
+    }
+
+    fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + API_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    }).then(function (response) {
+      if (!response.ok) {
+        throw new Error('API 错误: ' + response.status);
+      }
+      return handleStream(response);
+    }).catch(function (err) {
+      removeTypingIndicator();
+      addMessage('agent', '抱歉，出错了：' + err.message);
+      setSendingState(false);
+    });
+  }
+
+  function handleStream(response) {
+    isStreaming = true;
+    var reader = response.body.getReader();
+    var decoder = new TextDecoder();
+    var buffer = '';
+    var answerEl = null;
+
+    function processChunk() {
+      reader.read().then(function (result) {
+        if (result.done) {
+          isStreaming = false;
+          setSendingState(false);
+          return;
+        }
+
+        buffer += decoder.decode(result.value, { stream: true });
+        var lines = buffer.split('\n');
+        // 保留最后不完整的行
+        buffer = lines.pop() || '';
+
+        for (var i = 0; i < lines.length; i++) {
+          var line = lines[i].trim();
+          if (!line || !line.startsWith('data: ')) continue;
+
+          try {
+            var json = JSON.parse(line.slice(6));
+            var event = json.event;
+
+            if (event === 'agent_message') {
+              if (!answerEl) {
+                removeTypingIndicator();
+                answerEl = addMessage('agent', '');
+              }
+              if (json.answer) {
+                answerEl.textContent += json.answer;
+                scrollToBottom();
+              }
+            }
+
+            if (event === 'message_end') {
+              if (json.conversation_id) {
+                conversationId = json.conversation_id;
+              }
+              isStreaming = false;
+              setSendingState(false);
+            }
+          } catch (e) {
+            // 忽略解析失败的行
+          }
+        }
+
+        if (isStreaming) {
+          processChunk();
+        }
+      });
+    }
+
+    processChunk();
+  }
+
+  function setSendingState(sending) {
+    chatSend.disabled = sending;
+    chatInput.disabled = sending;
+    if (sending) {
+      chatInput.placeholder = '等待回复…';
+    } else {
+      chatInput.placeholder = '输入消息…';
+      chatInput.focus();
+    }
+  }
+
+  // ---- 输入框自适应高度 ----
+
+  function autoResize() {
+    chatInput.style.height = 'auto';
+    chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
+  }
+
+  chatInput.addEventListener('input', autoResize);
+
+  // ---- 事件绑定 ----
+
+  chatTrigger.addEventListener('click', function (e) {
+    e.preventDefault();
+    openPanel();
+  });
+
+  chatCloseBtn.addEventListener('click', function () {
+    closePanel();
+  });
+
+  chatOverlay.addEventListener('click', function () {
+    closePanel();
+  });
+
+  chatSend.addEventListener('click', function () {
+    sendMessage();
+  });
+
+  chatInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && isChatOpen) {
+      closePanel();
+    }
+  });
 })();

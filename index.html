@@ -45,7 +45,7 @@
         <span class="name-text">Bean</span>
         <img src="人物形象.png" alt="角色信息" class="role-image">
       </div>
-      <a href="mailto:3307354127@qq.com" class="email-link">
+      <a href="mailto:celinechen2000c@gmail.com" class="email-link">
         <img src="https://www.wbaipm.com/images/email.png" alt="Email" class="email-image">
       </a>
     </section>
@@ -53,19 +53,19 @@
     <!-- 中间导航链接区 -->
     <section class="center-section" aria-label="个人链接">
       <nav class="list-section">
-        <a href="https://www.yuque.com/hijiaobu" class="list-item" target="_blank" rel="noopener">
+        <button class="list-item agent-button" id="agent-chat-trigger" type="button">
           <img src="https://www.wbaipm.com/images/L.png" alt="" class="list-item-L">
           <div class="list-item-C"></div>
           <img src="https://www.wbaipm.com/images/R.png" alt="" class="list-item-R">
-          <span class="list-item-text">自媒体</span>
-        </a>
+          <span class="list-item-text">了解更多的我</span>
+        </button>
         <a href="https://docs.qq.com/space/DSmhPdWptYVZTb0pX" class="list-item dark" target="_blank" rel="noopener">
           <img src="https://www.wbaipm.com/images/zL.png" alt="" class="list-item-L">
           <div class="list-item-C"></div>
           <img src="https://www.wbaipm.com/images/zR.png" alt="" class="list-item-R">
           <span class="list-item-text">资料库</span>
         </a>
-        <a href="https://github.com/CrazyGoudanli" class="list-item" target="_blank" rel="noopener">
+        <a href="https://github.com/celinechen2000c-blip" class="list-item" target="_blank" rel="noopener">
           <img src="https://www.wbaipm.com/images/L.png" alt="" class="list-item-L">
           <div class="list-item-C"></div>
           <img src="https://www.wbaipm.com/images/R.png" alt="" class="list-item-R">
@@ -81,6 +81,44 @@
     </section>
 
   </main>
+
+  <!-- 遮罩层 -->
+  <div class="chat-overlay" id="chat-overlay" aria-hidden="true"></div>
+
+  <!-- 聊天面板（玻璃框架） -->
+  <aside class="chat-panel" id="chat-panel" aria-hidden="true">
+    <div class="chat-panel-header">
+      <span class="chat-panel-title">Hi Bean · AI</span>
+      <button class="chat-panel-close" id="chat-panel-close" type="button" aria-label="关闭聊天">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="chat-panel-body" id="chat-panel-body">
+      <div class="chat-messages" id="chat-messages">
+        <!-- 欢迎消息 -->
+        <div class="chat-bubble agent">
+          <img class="chat-bubble-avatar" src="人物形象.png" alt="">
+          <div class="chat-bubble-text">你好，我是 Bean 的 AI 助手。有什么想了解的吗？</div>
+        </div>
+      </div>
+      <div class="chat-input-area">
+        <textarea
+          class="chat-input"
+          id="chat-input"
+          rows="1"
+          placeholder="输入消息…"
+          aria-label="输入聊天消息"
+        ></textarea>
+        <button class="chat-send" id="chat-send" type="button" aria-label="发送">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M2 10L18 2L10 18L8 12L2 10Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </aside>
 
   <script src="script.js"></script>
 </body>
