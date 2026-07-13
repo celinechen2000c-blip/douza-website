@@ -1,125 +1,738 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#dce8e7">
-  <title>Hi Bean</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Bean｜AI 产品经理个人网站，展示 AI Demo、产品文章与项目经历。" />
+  <title>Bean｜AI 产品经理</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <main class="container">
-    <!-- 背景画布 -->
-    <div id="large-header" class="large-header">
-      <canvas id="demo-canvas"></canvas>
-    </div>
+  <header class="site-header">
+    <a class="brand" href="#home" aria-label="返回首页">
+      <span class="brand-mark">B</span><span>Bean</span>
+    </a>
+    <nav class="main-nav" aria-label="主导航">
+      <a href="#home">Home</a>
+      <a href="#demos">Demos</a>
+      <a href="#thinking">Thinking</a>
+      <a href="#about">About</a>
+    </nav>
+    <a class="nav-cta" href="#contact">联系我</a>
+  </header>
 
-    <!-- 顶部时钟区 -->
-    <section class="top-section" aria-label="时钟">
-      <div class="time" id="time" data-hours="00" data-minutes="00" data-seconds="00">
-        <div class="digit"><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div></div>
-        <div class="digit"><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div></div>
-        <div class="digit"><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div></div>
-        <div class="digit"><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div></div>
-        <div class="digit"><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div></div>
-        <div class="digit"><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div></div>
-      </div>
-    </section>
-
-    <!-- 左侧按钮区 -->
-    <section class="left-section" aria-label="快捷操作">
-      <button class="image-button wechat-button" id="wechat-button" type="button" aria-label="显示微信二维码">
-        <img src="wechat.png" alt="微信" class="wechat-image">
-      </button>
-      <div class="qrcode-popup" id="wechat-qrcode-popup" aria-hidden="true">
-        <img src="二维码.jpg" alt="微信二维码" class="qrcode-image">
-      </div>
-    </section>
-
-    <!-- 右侧个人信息区 -->
-    <section class="right-section" aria-label="个人信息">
-      <div class="xingxiang-section">
-        <span class="name-text">Bean</span>
-        <img src="人物形象.png" alt="角色信息" class="role-image">
-      </div>
-      <a href="mailto:celinechen2000c@gmail.com" class="email-link">
-        <img src="https://www.wbaipm.com/images/email.png" alt="Email" class="email-image">
-      </a>
-    </section>
-
-    <!-- 中间导航链接区 -->
-    <section class="center-section" aria-label="个人链接">
-      <nav class="list-section">
-        <button class="list-item agent-button" id="agent-chat-trigger" type="button">
-          <img src="https://www.wbaipm.com/images/L.png" alt="" class="list-item-L">
-          <div class="list-item-C"></div>
-          <img src="https://www.wbaipm.com/images/R.png" alt="" class="list-item-R">
-          <span class="list-item-text">了解更多的我</span>
-        </button>
-        <a href="https://docs.qq.com/space/DSmhPdWptYVZTb0pX" class="list-item dark" target="_blank" rel="noopener">
-          <img src="https://www.wbaipm.com/images/zL.png" alt="" class="list-item-L">
-          <div class="list-item-C"></div>
-          <img src="https://www.wbaipm.com/images/zR.png" alt="" class="list-item-R">
-          <span class="list-item-text">资料库</span>
-        </a>
-        <a href="https://github.com/celinechen2000c-blip" class="list-item" target="_blank" rel="noopener">
-          <img src="https://www.wbaipm.com/images/L.png" alt="" class="list-item-L">
-          <div class="list-item-C"></div>
-          <img src="https://www.wbaipm.com/images/R.png" alt="" class="list-item-R">
-          <span class="list-item-text">杂物间</span>
-        </a>
-        <a href="https://space.bilibili.com/1390202" class="list-item dark" target="_blank" rel="noopener">
-          <img src="https://www.wbaipm.com/images/L.png" alt="" class="list-item-L">
-          <div class="list-item-C"></div>
-          <img src="https://www.wbaipm.com/images/R.png" alt="" class="list-item-R">
-          <span class="list-item-text">创意工坊</span>
-        </a>
-      </nav>
-    </section>
-
-  </main>
-
-  <!-- 遮罩层 -->
-  <div class="chat-overlay" id="chat-overlay" aria-hidden="true"></div>
-
-  <!-- 聊天面板（玻璃框架） -->
-  <aside class="chat-panel" id="chat-panel" aria-hidden="true">
-    <div class="chat-panel-header">
-      <span class="chat-panel-title">Hi Bean · AI</span>
-      <button class="chat-panel-close" id="chat-panel-close" type="button" aria-label="关闭聊天">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-          <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </button>
-    </div>
-    <div class="chat-panel-body" id="chat-panel-body">
-      <div class="chat-messages" id="chat-messages">
-        <!-- 欢迎消息 -->
-        <div class="chat-bubble agent">
-          <img class="chat-bubble-avatar" src="人物形象.png" alt="">
-          <div class="chat-bubble-text">你好，我是 Bean 的 AI 助手。有什么想了解的吗？</div>
+  <main>
+    <section id="home" class="hero section-shell">
+      <div class="hero-copy reveal">
+        <span class="eyebrow">AI PRODUCT MANAGER · BUILDER</span>
+        <h1>把模糊的 AI 想法，<br><span>变成可体验、可验证的产品。</span></h1>
+        <p class="hero-lead">Hi，我是 Bean，一名专注于 AI 原生产品的产品经理。我关注 AI 如何真正进入用户工作流，并通过产品设计、Prompt、模型评测与快速原型，把创意做成真实体验。</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#demos">体验我的 Demo</a>
+          <a class="button secondary" href="#thinking">阅读产品思考</a>
+        </div>
+        <div class="hero-tags" aria-label="关注方向">
+          <span>AI Agent</span><span>多模态交互</span><span>AI 教育</span><span>人机协作</span>
         </div>
       </div>
-      <div class="chat-input-area">
-        <textarea
-          class="chat-input"
-          id="chat-input"
-          rows="1"
-          placeholder="输入消息…"
-          aria-label="输入聊天消息"
-        ></textarea>
-        <button class="chat-send" id="chat-send" type="button" aria-label="发送">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <path d="M2 10L18 2L10 18L8 12L2 10Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-          </svg>
-        </button>
+      <div class="hero-visual reveal">
+        <div class="avatar-stage">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <img src="assets/bean-avatar.png" alt="Bean 的个人形象" />
+          <div class="status-card"><span class="status-dot"></span> 正在探索 AI 产品的新可能</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="demos" class="section-shell section-block">
+      <div class="section-heading reveal">
+        <span class="eyebrow">SELECTED DEMOS</span>
+        <h2>两个可以直接体验的 AI 产品实验</h2>
+        <p>不只展示结果，也展示我如何定义场景、设计交互、处理失败路径与评测产品价值。</p>
+      </div>
+
+      <article class="demo-card demo-card-featured reveal">
+        <div class="demo-content">
+          <div class="demo-index">01</div>
+          <span class="pill">AI 陪伴 · 语音交互</span>
+          <h3>AI 声音陪练师</h3>
+          <p>为老年人提供诗词朗诵与语音陪伴体验，通过浑厚自然的人声诵读、清晰的交互引导，让每一次使用都像有一位老友在身旁轻声朗读。</p>
+          <div class="demo-meta">
+            <div><strong>核心能力</strong><span>TTS 诵读 · 语速调节 · 正念陪伴 · 大字模式</span></div>
+            <div><strong>产品重点</strong><span>老年人友好 · 情感陪伴 · 缓慢语速</span></div>
+          </div>
+          <button class="text-link" data-modal="demo-poem">查看完整案例 <span>↗</span></button>
+        </div>
+        <div class="demo-preview poem-preview">
+          <div class="preview-window">
+            <div class="preview-topbar"><span></span><span></span><span></span></div>
+            <div class="poem-card" id="poemCard">
+              <small>今日推荐</small>
+              <h4>面朝大海，春暖花开</h4>
+              <p>从明天起，做一个幸福的人<br>喂马、劈柴，周游世界<br>从明天起，关心粮食和蔬菜<br>我有一所房子，面朝大海，春暖花开</p>
+              <div class="wave" id="poemWave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              <button id="poemPlayBtn">🔊 点击收听朗诵</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="demo-card reveal">
+        <div class="demo-content">
+          <div class="demo-index">02</div>
+          <span class="pill">AI 工作流 · 产品策略</span>
+          <h3>AI 产品方案诊断器</h3>
+          <p>输入一个 AI 产品创意，通过结构化对话澄清用户、问题、AI 价值、风险、评测与 MVP 范围，最终生成一张可执行的 AI 产品卡片。</p>
+          <div class="demo-meta">
+            <div><strong>核心能力</strong><span>需求澄清 · Agent 工作流 · 结构化输出</span></div>
+            <div><strong>产品重点</strong><span>Human-in-the-loop · 风险识别 · MVP 定义</span></div>
+          </div>
+          <button class="text-link" data-modal="demo-diagnosis">查看完整案例 <span>↗</span></button>
+        </div>
+        <div class="demo-preview diagnosis-preview" aria-hidden="true">
+          <div class="preview-window">
+            <div class="preview-topbar"><span></span><span></span><span></span></div>
+            <div class="diagnosis-grid">
+              <div class="diag-sidebar">
+                <b>AI Product Canvas</b>
+                <button data-step="1" class="active">01 用户与问题</button>
+                <button data-step="2">02 AI 价值</button>
+                <button data-step="3">03 风险与评测</button>
+                <button data-step="4">04 MVP 范围</button>
+              </div>
+              <div class="diag-main">
+                <div class="diag-panel active" data-step="1">
+                  <small>你的产品想法</small>
+                  <p>帮助销售自动回复客户消息的 Agent</p>
+                  <div class="diag-answer">这个场景中，哪些回复必须由销售确认后才能发送？</div>
+                </div>
+                <div class="diag-panel" data-step="2">
+                  <small>AI 价值判断</small>
+                  <p>不是所有回复都需要 AI</p>
+                  <div class="diag-answer">哪些类型的客户问题最适合 AI 自动处理？重复性高、答案标准化的问题最有价值。</div>
+                </div>
+                <div class="diag-panel" data-step="3">
+                  <small>风险识别</small>
+                  <p>AI 误回复可能导致客户流失</p>
+                  <div class="diag-answer">如何衡量这个 Agent 是否成功？关注回复准确率、客户满意度、销售人均节省时间。</div>
+                </div>
+                <div class="diag-panel" data-step="4">
+                  <small>MVP 定义</small>
+                  <p>第一版只覆盖 3 类常见问题</p>
+                  <div class="diag-answer">MVP 上线后，最重要的验证指标是什么？销售是否真的信任 AI 的回复建议。</div>
+                </div>
+                <div class="progress"><i></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section id="thinking" class="thinking-section section-block">
+      <div class="section-shell">
+        <div class="section-heading reveal">
+          <span class="eyebrow">THINKING</span>
+          <h2>AI 产品文章</h2>
+          <p>记录我对 AI 场景、交互、评测和产品决策的持续思考。</p>
+        </div>
+        <div class="article-list">
+          <article class="article-row reveal" data-modal="article-1" tabindex="0" role="button" aria-label="阅读文章：判断一个需求是否真的需要 AI"><span class="article-no">01</span><div><span class="pill">AI 产品方法</span><h3>判断一个需求是否真的需要 AI</h3><p>从不确定性、规模化价值和人机分工三个维度，识别"为了 AI 而 AI"的伪场景。</p></div><span class="article-arrow">↗</span></article>
+          <article class="article-row reveal" data-modal="article-2" tabindex="0" role="button" aria-label="阅读文章：Agent 产品为什么必须设计人工确认"><span class="article-no">02</span><div><span class="pill">Agent 设计</span><h3>Agent 产品为什么必须设计人工确认</h3><p>不是所有自动化都应该一步完成。确认节点决定了效率、风险和用户信任之间的平衡。</p></div><span class="article-arrow">↗</span></article>
+          <article class="article-row reveal" data-modal="article-3" tabindex="0" role="button" aria-label="阅读文章：从模型指标到产品指标"><span class="article-no">03</span><div><span class="pill">Evaluation</span><h3>从模型指标到产品指标：AI 产品如何评测</h3><p>除了准确率，还应该观察任务完成率、修改成本、采纳率和用户信任。</p></div><span class="article-arrow">↗</span></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="section-shell section-block about-section">
+      <div class="about-portrait reveal"><div class="portrait-card"><img src="assets/bean-avatar.png" alt="Bean 的个人形象"><span>Bean · AI PM</span></div></div>
+      <div class="about-copy reveal">
+        <span class="eyebrow">ABOUT ME</span>
+        <h2>我喜欢研究 AI 能做什么，<br>但更关心它什么时候不应该做。</h2>
+        <p>我习惯从真实用户场景出发，把一个 AI 产品拆分成模型能力、产品规则、交互反馈与评测指标。相比只写文档，我更喜欢通过可交互的 Demo 验证产品假设。</p>
+        <div class="about-grid">
+          <div><strong>我擅长</strong><span>AI 产品策略</span><span>需求与场景判断</span><span>Prompt / Agent 工作流</span><span>模型与产品评测</span></div>
+          <div><strong>工作方式</strong><span>用户问题优先</span><span>快速原型验证</span><span>明确失败路径</span><span>数据驱动迭代</span></div>
+        </div>
+        <div class="experience">
+          <h3>项目经历</h3>
+          <div class="experience-item"><span>AI 声音陪练师</span><p>负责产品定义、适老化语音交互设计、朗诵语速策略与 Demo 验证。</p></div>
+          <div class="experience-item"><span>AI 产品方案诊断器</span><p>设计结构化诊断流程、Agent 提问策略、风险检查与产品卡片输出。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="contact-section section-block">
+      <div class="section-shell contact-inner reveal">
+        <span class="eyebrow">LET'S CONNECT</span>
+        <h2>想聊聊 AI 产品、Demo 或合作？</h2>
+        <p>欢迎通过邮箱、微信或 GitHub 找到我。</p>
+        <div class="contact-actions">
+          <a class="button primary" href="mailto:celinechen2000c@gmail.com">发送邮件</a>
+          <a class="button secondary" href="https://github.com/celinechen2000c-blip" target="_blank" rel="noreferrer">查看 GitHub</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer><span>© 2026 Bean</span><span>Designed as an AI Product Portfolio</span></footer>
+
+  <button class="assistant-launcher" id="assistantLauncher" aria-label="打开 Bean 的 AI 助手">
+    <img src="assets/bean-avatar.png" alt=""><span>问问 Bean AI</span>
+  </button>
+  <aside class="assistant-panel" id="assistantPanel" aria-hidden="true">
+    <div class="assistant-header">
+      <div><img src="assets/bean-avatar.png" alt="Bean"><span><strong>Bean · AI</strong><small><i></i> 在线</small></span></div>
+      <button id="assistantClose" aria-label="关闭助手">×</button>
+    </div>
+    <div class="assistant-messages" id="assistantMessages">
+      <div class="message bot">你好，我是 Bean 的 AI 助手。你可以从下面的问题开始了解她 👋</div>
+      <div class="quick-questions" id="quickQuestions">
+        <button>Bean 是一名什么样的产品经理？</button>
+        <button>带我看看她最有代表性的 Demo</button>
+        <button>她如何设计 AI 产品？</button>
+        <button>她有哪些项目经历？</button>
+        <button>如何联系 Bean？</button>
       </div>
     </div>
+    <form class="assistant-input" id="assistantForm">
+      <input id="assistantInput" aria-label="输入问题" placeholder="也可以输入你想了解的问题…" autocomplete="off">
+      <button type="submit" aria-label="发送">↑</button>
+    </form>
   </aside>
 
+  <dialog class="case-modal" id="demo-poem">
+    <button class="modal-close" aria-label="关闭">×</button>
+    <span class="pill">AI 陪伴 · 语音交互</span><h2>AI 声音陪练师</h2>
+    <div class="case-grid"><div><h3>Problem</h3><p>老年人群体往往缺乏日常陪伴与精神滋养，市场上大部分语音产品面向年轻用户，忽视了大字体、慢语速、简单交互等适老化需求。</p></div><div><h3>Insight</h3><p>老年人需要的不是功能丰富的 App，而是简单温暖的人声陪伴——一键即可收听经典诗词朗诵，声音低沉柔和，像老友在耳边说话。</p></div><div><h3>AI Design</h3><p>精选浑厚自然的语音合成模型，字间停顿适当延长，支持语速三档调节与重复播放；界面采用大字号、高对比度，配合朗诵进度提示。</p></div><div><h3>Evaluation</h3><p>关注使用时长、重复收听率、语速偏好分布、朗诵完成率，以及老年人的主观陪伴感反馈。</p></div><div><h3>Failure Cases</h3><p>针对听力差异提供音量增强；语音播报中断时自动恢复；长文本分段处理避免疲劳；无网络时预置离线朗诵。</p></div><div><h3>Next Step</h3><p>增加更多朗诵主题与经典文章；加入定时朗诵功能（如午间陪伴、晚间诗歌）；收集老年人的偏好反馈持续优化声音质感。</p></div></div>
+  </dialog>
+
+  <!-- ====== 文章详情弹窗 ====== -->
+  <dialog class="article-modal" id="article-1">
+    <button class="modal-close" aria-label="关闭">×</button>
+    <div class="article-detail-header">
+      <span class="article-detail-no">01</span>
+      <span class="pill">AI 产品方法</span>
+    </div>
+    <h2>判断一个需求是否真的需要 AI</h2>
+    <div class="article-detail-body">
+      <p>过去两年，产品经理在需求评审会上听到最多的一句话，可能已经从「这个功能能不能做成小程序」，变成了：<strong>「这里能不能加一个 AI？」</strong></p>
+      <p>客服要加AI，知识库要加AI，报表要加AI，连原本点两下就能完成的操作，也要套一个对话框。</p>
+      <p>AI正在变成新的产品装饰。</p>
+      <p>界面上没有一个闪着渐变色的AI按钮，产品似乎就不够先进；竞品上线了AI功能，自己的需求池里第二天就会多出一个「快速跟进」。</p>
+      <p>但对AIPM来说，真正困难的问题从来不是「怎么接模型」，而是：<strong>这个需求，真的需要AI吗？</strong></p>
+      <p>今天做出一个能演示的AI功能并不难。难的是证明它上线后有人用，用户用了以后真的省事，规模扩大以后成本仍然合理，模型答错以后业务也不会失控。</p>
+      <p>判断一个需求是不是「为了AI而AI」，我通常看三个维度：</p>
+      <ol>
+        <li>任务里是否存在值得AI处理的不确定性；</li>
+        <li>这项能力能否产生规模化价值；</li>
+        <li>人与AI之间能否形成清楚分工。</li>
+      </ol>
+      <p>三个问题中，只要有一个答不上来，这个需求就不应该急着立项。</p>
+
+      <h3>一、没有不确定性，就没有必要上AI</h3>
+
+      <h4>AI不是更高级的规则引擎</h4>
+      <p>很多团队判断一个场景是否适合AI时，首先问的是：模型能不能做？</p>
+      <p>从技术上看，大模型能做很多事情。它能识别发票、修改文案、查询订单，也能生成报表。</p>
+      <p>但「能做」和「应该做」完全是两回事。</p>
+      <p>一个需求是否需要AI，首先要看任务中有没有不确定性。</p>
+      <p>所谓不确定性，通常来自四种情况：</p>
+      <ul>
+        <li>用户输入很模糊；</li>
+        <li>信息是非结构化的；</li>
+        <li>规则难以穷举；</li>
+        <li>输出不只有一个标准答案。</li>
+      </ul>
+      <p>例如，用户对客服说：<em>「我上周买的东西还没到，明天就要送人了，怎么办？」</em></p>
+      <p>这句话没有明确说订单号，也没有直接说要退款、催物流还是改地址。系统需要理解上下文和真实意图。</p>
+      <p>这是AI适合处理的任务。</p>
+      <p>但如果需求只是：根据订单号查询物流状态。那就不需要大模型。查数据库、调用物流接口，结果更快、更准。</p>
+      <p>如果强行让AI处理，不仅增加成本，还可能把「已到达转运中心」总结成「预计今天送达」。用户听起来更舒服了，信息却错了。</p>
+
+      <h4>确定性任务，优先交给确定性系统</h4>
+      <p>传统软件最擅长的是：明确输入、固定规则、标准流程、唯一结果。</p>
+      <p>比如订单金额、库存扣减、权限判断、支付状态、优惠计算。这些任务对准确率和一致性要求很高，规则又能清楚描述。</p>
+      <p>这时候，数据库、搜索、规则引擎和工作流系统通常比大模型更合适。</p>
+      <p>AI更像一个善于理解模糊信息、给出可能答案的同事，而不是永远精确的计算器。</p>
+      <p>所以，需求评审时我会先问一句：<strong>如果不用AI，这件事能不能通过规则、搜索、模板或自动化完成？</strong>如果答案是「能，而且更稳定」，那就没有必要为了体现AI含量，把简单任务改造成模型任务。</p>
+
+      <h4>正确做法：让AI理解，让系统执行</h4>
+      <p>假设销售人员问：「华东区本月还有多少未回款合同？」</p>
+      <p>这个需求可以拆成两部分：第一，理解用户在问什么。第二，准确查询数据并计算结果。</p>
+      <p>前者可以交给AI，把自然语言转成查询条件；后者必须交给数据库。</p>
+      <p>合理的流程是：<strong>AI理解问题 → 系统生成查询条件 → 数据库返回结果 → AI负责解释</strong>，而不是把一堆销售数据塞给模型，让它直接生成数字。</p>
+      <p>前者让AI处理不确定性，让系统处理事实；后者则把本来准确的数据库变成概率游戏。</p>
+
+      <h3>二、一次惊艳，不等于规模化价值</h3>
+
+      <h4>AI最容易制造Demo幻觉</h4>
+      <p>AI产品很容易让团队产生一种错觉：只要Demo跑通，业务价值就成立了。</p>
+      <p>会议室里，产品经理输入一句复杂指令，AI十几秒生成一份漂亮报告。领导觉得效果不错，项目顺利立项。</p>
+      <p>三个月后，真正使用它的人每天只有十几个，其中一半生成后还要大改。</p>
+      <p>这种项目不是没有能力，而是没有规模化价值。</p>
+      <p>判断一个AI需求值不值得做，不能只看它能否完成一次任务，还要看这种价值能否稳定、低成本地重复发生。</p>
+
+      <h4>规模化价值，要看五件事</h4>
+
+      <p><strong>第一，任务是否高频。</strong>一个任务每人每年只发生一两次，即使AI每次节省十分钟，总价值也有限。相反，一个客服团队每天处理几万条咨询，即使AI每次只节省十秒，累计价值也可能很大。所以不要先问「效果有多惊艳」，而要问：这个动作一天发生多少次？</p>
+
+      <p><strong>第二，能力能否复用。</strong>为某位领导定制一个AI周报工具，可能有使用价值，但未必有产品价值。如果同样的能力能被上百名管理者使用，或者能迁移到销售周报、运营周报和项目周报，才值得持续投入。产品不是为一次需求写一个提示词，而是把共性能力做成可复用的系统。</p>
+
+      <p><strong>第三，节省的是完整时间，还是生成时间。</strong>AI生成报告只需要一分钟，不代表整个任务只需要一分钟。用户可能还要检查事实、修改格式、删除错误内容、补充遗漏信息，并与原始资料逐条核对。如果原来人工写报告需要30分钟，AI生成需要1分钟，但核验和重写需要35分钟，产品并没有提高效率，只是改变了工作的顺序。AIPM要计算完整任务链，而不是只看模型生成速度。</p>
+
+      <p><strong>第四，规模扩大后成本是否仍然合理。</strong>AI产品的成本不只有模型调用费，还包括数据清洗、系统集成、知识库维护、人工复核、内容审核、异常处理和安全合规。如果一个功能每次只能节省几毛钱，却需要持续调用高成本模型并进行人工检查，那么用得越多，未必价值越大，也可能亏得越快。</p>
+
+      <p><strong>第五，错误是否会被规模放大。</strong>产品每天运行一万次，即使准确率很高，也仍然会持续产生错误。真正要问的不是「模型准确率够不够高」，而是：错误会发生在哪里？用户能不能发现？一次错误会造成多大损失？能不能撤回？有没有人处理异常？规模会放大收益，也会放大错误。</p>
+
+      <h4>给AI需求算一笔完整账</h4>
+      <p>可以用一个简单公式：</p>
+      <p><strong>AI净价值 = 使用次数 × 单次有效收益 − 模型成本 − 系统成本 − 复核成本 − 错误成本</strong></p>
+      <p>最容易被夸大的是「单次收益」，最容易被忽略的是「复核成本」和「错误成本」。不要只计算AI完成了什么，还要计算人为了让AI可用，又多做了什么。</p>
+
+      <h3>三、AI可以给答案，但不能替人承担后果</h3>
+
+      <h4>人机分工，不是AI生成、人来背锅</h4>
+      <p>很多AI项目上线以后，形成了一种奇怪的工作方式：AI先生成；员工逐字核对；发现问题后全部重写；最后仍由员工承担责任。</p>
+      <p>表面上看，人和AI一起完成了任务。实际上，AI只是增加了一道不稳定的草稿环节。</p>
+      <p>真正的人机分工，应该重新拆解任务：哪些步骤是信息搜集；哪些步骤是模式识别；哪些步骤是提出建议；哪些步骤是做决定；哪些步骤需要承担责任。</p>
+      <p>AI适合处理大量信息、寻找模式、生成候选方案和完成初步分类。人更适合设定目标、处理例外、权衡利益，并承担最终责任。</p>
+
+      <h4>AI负责可能性，系统负责事实，人负责结果</h4>
+      <p>以客户投诉为例，可以拆成：</p>
+      <ol>
+        <li>AI识别投诉主题；</li>
+        <li>AI提取订单号和诉求；</li>
+        <li>系统查询真实订单；</li>
+        <li>规则判断是否满足退款条件；</li>
+        <li>AI生成回复草稿；</li>
+        <li>高风险案例转人工；</li>
+        <li>人确认后发送。</li>
+      </ol>
+      <p>这里，AI负责理解和表达，系统负责事实与规则，人负责例外和责任。</p>
+      <p>如果直接让AI自行决定退款并执行，模型就同时承担理解、查询、判断和执行。任何一个环节出错，都可能造成真实损失。</p>
+      <p>高风险场景不是不能使用AI，但AI更适合整理材料、标出异常、给出候选判断、展示依据和提醒遗漏信息。最终决定仍应由具有相应权限的人完成。</p>
+
+      <h3>四、五种典型的伪AI场景</h3>
+
+      <p><strong>1. 先有AI，再找问题。</strong>正常需求从用户问题开始。伪需求通常从一句话开始：公司要做一个大模型，请大家提供场景。这时，团队不是在找解决问题的工具，而是在找证明工具有用的问题。</p>
+
+      <p><strong>2. 不用AI也能做，而且更稳。</strong>原来点一下就能查快递，现在要用户输入「帮我查一下物流」。步骤没有减少，等待更长，还多了误解风险。自然语言不是所有场景中最好的交互方式。用户目标明确时，按钮和筛选项往往更快。</p>
+
+      <p><strong>3. 只展示最好的一次。</strong>AI演示时，团队通常会挑选最适合模型的输入。真正上线后，用户会输入错别字、不完整信息、长文本和矛盾要求。成熟的AI需求文档，必须包含失败案例、拒答策略、回退路径和异常处理，而不只是成功截图。</p>
+
+      <p><strong>4. 节省时间小于检查时间。</strong>AI30秒写出方案，员工却要40分钟核对数字和事实。这不是提效，而是把「从零开始写」变成「在真假混合的内容中排雷」。</p>
+
+      <p><strong>5. 出错以后没人负责。</strong>产品说模型只是建议，业务却直接复制使用；业务说系统自动生成，产品又说最终责任在人。凡是进入真实流程的AI功能，都要写清楚：谁检查；检查什么；哪些错误必须拦截；谁拥有最终权限；出错后如何追查。责任不清楚的AI，不是智能化，而是把风险藏进了对话框。</p>
+
+      <h3>五、一套可以直接使用的判断方法</h3>
+      <p>我把AI需求判断方法总结为：<strong>三道门、两张账、一条线。</strong></p>
+
+      <h4>第一道门：必要性门</h4>
+      <p>回答五个问题：</p>
+      <ul>
+        <li>输入是否模糊或非结构化？</li>
+        <li>规则是否难以穷举？</li>
+        <li>输出是否允许多个合理答案？</li>
+        <li>AI是否明显优于搜索、规则和自动化？</li>
+        <li>去掉AI后，核心问题是否仍然无法解决？</li>
+      </ul>
+      <p>如果多数答案是否定的，优先使用传统技术。</p>
+
+      <h4>第二道门：价值门</h4>
+      <p>需要收集：任务发生频率；真实用户数量；当前完整处理时长；AI介入后的完整时长；模型和系统成本；人工复核成本；错误损失；能否复制到其他流程。不要只写「提升效率」，要写清楚从多少分钟降到多少分钟，影响多少人。</p>
+
+      <h4>第三道门：责任门</h4>
+      <p>必须明确：AI负责什么；系统负责什么；人负责什么；哪些情况必须转人工；输出是否需要审核；操作能否撤销；日志能否追查。如果没人愿意对结果负责，AI就不应该自动执行。</p>
+
+      <h4>两张账：收益账和代价账</h4>
+      <p>收益账包括节省多少完整时间、减少多少重复操作、增加多少收入、降低多少损失。代价账包括模型费用、开发费用、数据维护、人工复核、安全审核、异常处理和错误损失。只有收益明显大于代价，规模扩大后仍然成立，项目才值得继续。</p>
+
+      <h4>一条线：自动化边界线</h4>
+      <p>根据风险，把AI权限分为四级：</p>
+      <ol>
+        <li><strong>只生成</strong>：生成文案和草稿；</li>
+        <li><strong>给建议</strong>：人决定是否执行；</li>
+        <li><strong>确认后执行</strong>：人点击确认后修改数据；</li>
+        <li><strong>自动执行</strong>：AI自主处理，只把异常交给人。</li>
+      </ol>
+      <p>AI不是越自动越先进。金额越高、风险越大、越难撤回的操作，自动化级别就应该越低。</p>
+
+      <h3>六、AIPM真正要做的，不是给产品加AI</h3>
+      <p>AI刚进入产品时，团队最容易证明的是能力：能写；能总结；能识别；能调用工具；能自动执行。</p>
+      <p>但当这些能力逐渐普及，真正的产品差距不再是谁先接入模型，而是谁更清楚：哪个问题值得AI解决；哪一步必须使用确定性系统；哪个结果必须由人确认；什么价值能够持续产生；什么需求应该主动放弃。</p>
+      <p>AIPM不是给产品增加AI功能的人。AIPM更重要的职责，是判断AI应该出现在哪里，又应该在哪里停下来。</p>
+      <p>下一次有人问「这里能不能加AI」时，不妨先问三个问题：</p>
+      <ul>
+        <li>这件事为什么非AI不可？</li>
+        <li>它被使用一万次以后，价值还成立吗？</li>
+        <li>AI给出错误答案时，谁发现、谁处理、谁负责？</li>
+      </ul>
+      <p>能把这三个问题回答清楚，才值得开始做产品。回答不清楚，就先别急着加那个闪着渐变色的AI按钮。</p>
+      <p>AI时代真正稀缺的，不是生成答案的能力。而是判断什么问题，值得交给AI。</p>
+    </div>
+  </dialog>
+
+  <dialog class="article-modal" id="article-2">
+    <button class="modal-close" aria-label="关闭">×</button>
+    <div class="article-detail-header">
+      <span class="article-detail-no">02</span>
+      <span class="pill">Agent 设计</span>
+    </div>
+    <h2>Agent 产品为什么必须设计人工确认</h2>
+    <div class="article-detail-body">
+      <p><strong>不是所有自动化都应该一步完成。确认节点决定了效率、风险和用户信任之间的平衡。</strong></p>
+      <p>一个 Agent 最危险的时刻，不是它答错了，而是它把错误答案直接变成了真实动作。</p>
+      <p>写错一段文案，可以重新生成；发错一封邮件，客户已经看见；删错生产数据，可能无法恢复；错误退款十万元，财务和法务都要介入；把内部合同发给外部人员，损失甚至无法用金额衡量。</p>
+      <p>过去做互联网产品，我们习惯追求「少一步」「自动完成」「一键处理」。但到了 Agent 时代，这套经验不能原样照搬。</p>
+      <p>传统软件通常执行用户明确发出的指令，而 Agent 会理解目标、拆解任务、选择工具，并代表用户采取行动。它不只是给建议，而是在逐步获得操作邮箱、数据库、客户系统、支付工具和办公软件的能力。</p>
+      <p>当产品从「告诉你怎么做」走向「替你去做」，人工确认就不再是一个多余弹窗，而是一套必要的控制系统。</p>
+      <p>真正成熟的 Agent 产品，不是让用户永远点确认，也不是为了展示智能而把一切交给机器。它要解决的是一个更难的问题：</p>
+      <p><strong>什么事情可以直接做，什么事情必须先问人，什么事情根本不应该让 Agent 执行？</strong></p>
+
+      <h3>一、Agent 和普通自动化，区别不只是更聪明</h3>
+      <p>传统自动化的逻辑通常比较确定。</p>
+      <p>例如，订单超过30分钟未支付就自动关闭；库存低于安全线就通知采购；报销金额低于500元就流转给直属主管。输入、规则和输出，大多提前写好。</p>
+      <p>Agent 不一样。</p>
+      <p>用户可能只说一句：「帮我把长期不活跃的客户清理一下。」</p>
+      <p>这句话至少有五个问题没有说清楚：</p>
+      <ul>
+        <li>多久没活跃算长期不活跃？</li>
+        <li>「清理」是打标签、停止营销，还是删除客户资料？</li>
+        <li>正在跟进但没有登录记录的客户怎么算？</li>
+        <li>大客户和普通客户是否用同一标准？</li>
+        <li>删除后能不能恢复？</li>
+      </ul>
+      <p>人类同事遇到这种任务，通常会先问几句。Agent 如果把「完成任务」放在第一位，就可能自己补全条件，然后直接执行。</p>
+      <p>问题在于，模型补全的是「可能合理的理解」，不是用户正式授权的决定。</p>
+      <p>因此，设计 Agent 产品时，必须分清三个层次：</p>
+      <ul>
+        <li><strong>第一层：建议。</strong>Agent 告诉用户应该做什么。</li>
+        <li><strong>第二层：准备。</strong>Agent 把文案、名单、参数和操作步骤准备好，但暂不执行。</li>
+        <li><strong>第三层：行动。</strong>Agent 真正发送邮件、修改数据、支付费用、提交审批或对外发布。</li>
+      </ul>
+      <p>很多产品的问题，是从第一层直接跳到了第三层。</p>
+      <p>用户说「帮我处理一下」，Agent 就理解成「你已经授权我完成所有必要动作」。这不是智能，而是越权。</p>
+
+      <h3>二、人工确认不是拖慢效率，而是给错误加刹车</h3>
+      <p>很多产品经理反对确认节点，理由很熟悉：</p>
+      <p>多点一次，完成率会下降；用户既然用了 Agent，就是希望少操作；如果每一步都问，还不如自己做。</p>
+      <p>这些判断只对了一半。</p>
+      <p>没有人喜欢无意义的确认。读取公开网页、整理会议记录、生成草稿，如果每一步都弹窗，Agent 确实会变得难用。</p>
+      <p>但这不等于确认越少越好。</p>
+      <p>一辆车的刹车不会降低它的价值。恰恰因为有刹车，驾驶者才敢把车开快。</p>
+      <p>人工确认也是如此。它不是为了减慢所有流程，而是让系统在低风险区域自动运行，在接近风险边界时停下来。</p>
+      <p>确认节点的本质，是把两个动作拆开：</p>
+      <p><strong>Agent 可以提出行动，但不能自动获得行动权。</strong></p>
+
+      <h4>1. 防止错误直接落地</h4>
+      <p>模型会误解用户意图，也可能使用错误参数。</p>
+      <p>例如，用户说「把昨天退款失败的订单重新处理一下」，Agent 可能把「重新发起审核」理解成「直接退款」。</p>
+      <p>如果系统先展示订单数量、总金额、退款原因和操作方式，用户很容易发现问题。没有确认，错误会直接进入支付系统。</p>
+      <p>人工确认不能保证模型不犯错，但能阻止一部分错误从「判断错误」升级成「业务事故」。</p>
+
+      <h4>2. 让责任边界更清楚</h4>
+      <p>很多企业动作不只是对错问题，还涉及授权。</p>
+      <p>Agent 可以生成采购方案，但谁有权批准采购？Agent 可以起草劳动合同，但谁能代表公司发出正式版本？Agent 可以判断某位用户可能违规，但谁有权封禁账号？</p>
+      <p>这类动作不能只凭模型置信度决定。它们背后还有岗位权限、组织责任和法律后果。</p>
+      <p>人工确认不仅是产品交互，也是公司制度在产品中的体现。</p>
+
+      <h4>3. 建立用户的可控感</h4>
+      <p>用户是否信任一个 Agent，不只取决于它做对了多少次，还取决于用户是否知道它准备做什么。</p>
+      <p>一个从不询问、直接操作的 Agent，前几次可能让人惊喜。只要出现一次严重错误，用户就会迅速收回权限。</p>
+      <p>相反，一个能在关键动作前说明「我将修改哪些数据、影响哪些人、是否可以撤销」的 Agent，更容易获得长期授权。</p>
+      <p>信任不是来自「它看起来无所不能」，而是来自「它不会在我不知情时做重要决定」。</p>
+
+      <h3>三、真正困难的，是把确认放在正确的位置</h3>
+      <p>最差的设计有两种。</p>
+      <p><strong>第一种是完全不确认。</strong>Agent 拿到邮箱、客户系统和支付权限后，可以自行发送、修改和执行。产品看起来很流畅，但风险被藏在流程后面。</p>
+      <p><strong>第二种是每一步都确认。</strong>读取文件要确认，搜索资料要确认，生成草稿要确认，修改一个标点也要确认。用户很快会形成机械点击习惯，不再认真阅读提示。</p>
+      <p>这就是「确认疲劳」。当用户连续点击「允许」时，人工确认会退化成盖章动作，失去真正的安全价值。</p>
+      <p>所以，正确的问题不是「是否加入人工确认」，而是：<strong>什么情况下必须确认，什么情况下不该打扰用户。</strong></p>
+
+      <h4>1. 动作是否可逆</h4>
+      <p>可逆动作，可以适当减少确认。例如创建草稿、生成临时文件、添加内部标签、把内容保存到未发布状态。即使出错，也能恢复或重做。</p>
+      <p>不可逆，或者恢复成本很高的动作，应当确认。例如删除正式数据、覆盖原文件、发布内容、转账付款、取消订单、修改生产配置。</p>
+      <p>产品经理还要注意：有些操作技术上可以撤销，业务上却无法真正撤销。一封邮件即使能从发件箱删除，对方也可能已经看到；一条错误推送即使能下线，截图可能已经传播。因此，对外发送和公开发布，通常都应该按高风险动作处理。</p>
+
+      <h4>2. 影响范围有多大</h4>
+      <p>修改一条个人备忘录，和修改十万名用户的权益，不应使用同一套流程。</p>
+      <p>影响范围可以从四方面衡量：涉及多少对象，涉及多少金额，是否影响外部人员，是否会引发后续连锁操作。</p>
+      <p>同一个动作，也可以设置不同阈值。例如，自动发放5元优惠券可以不确认；发放500元优惠券需要业务负责人批准；批量向十万用户发放，则需要二次确认并展示总预算。</p>
+      <p>不要只根据「调用了什么工具」决定是否确认。真正需要判断的，是这一次调用的具体参数。</p>
+
+      <h4>3. 用户意图是否清楚</h4>
+      <p>有些风险不是动作本身造成的，而是用户表达得太模糊。</p>
+      <p>「把没用的文件删掉。」「帮我回复得强硬一点。」「把表现差的员工筛出来。」</p>
+      <p>这些指令都包含大量主观判断。</p>
+      <p>Agent 不应该先执行再解释，而应该先说清自己的理解：<em>「我计划将90天未打开、没有被项目引用、且不属于归档目录的文件视为『没用的文件』，预计涉及327个文件。是否按照这个标准继续？」</em></p>
+      <p>这里的确认，不是权限确认，而是<strong>语义确认</strong>。只要不同理解会明显改变结果，就应该先让用户确认标准。</p>
+
+      <h4>4. 是否涉及敏感数据和外部承诺</h4>
+      <p>只要动作会接触隐私信息、商业机密、账号凭证，或者代表用户向外部作出承诺，就应提高确认等级。</p>
+      <p>典型场景包括：把内部文件发给外部邮箱；读取通讯录、医疗记录或财务信息；代表公司报价；接受合同条款；向客户承诺退款或交付时间；修改账号权限；使用用户身份公开发言。</p>
+      <p>这些动作的风险，不只来自模型是否判断准确。即使内容正确，Agent 也可能没有资格代表用户执行。</p>
+
+      <h3>四、确认页面不能只放「确认」和「取消」</h3>
+      <p>很多产品虽然加入了确认按钮，但用户仍然不知道自己在确认什么。</p>
+      <p>一个合格的确认界面，至少要回答五个问题：</p>
+      <ol>
+        <li><strong>Agent 准备做什么。</strong>不要只写「是否允许执行操作」，而要写清楚：「将向128名近30天未续费的企业客户发送召回邮件。」</li>
+        <li><strong>为什么这样做。</strong>展示关键依据：「这些客户同时满足：合同已到期、过去30天无续费记录、当前没有销售跟进任务。」用户需要的是决策依据，不是模型的思考作文。</li>
+        <li><strong>会影响谁和什么。</strong>展示人数、金额、系统、文件和外部对象：「预计产生优惠成本12,800元；邮件将使用销售总监账号发送；其中17名客户属于重点客户名单。」</li>
+        <li><strong>是否可以撤销。</strong>明确告诉用户：「发送后无法撤回。」「修改后可在24小时内恢复。」「删除内容将进入回收站，保留30天。」可逆性不能藏在帮助文档里。</li>
+        <li><strong>用户还能修改什么。</strong>不要只提供「全部接受」或「全部拒绝」。用户应该能够修改执行范围、删除部分对象、调整金额和文案、选择仅保存草稿，或者把任务交给其他审批人。确认节点不是拦路收费站，而应该是最后编辑台。</li>
+      </ol>
+
+      <h3>五、确认不是一个按钮，而是四种产品机制</h3>
+      <p>成熟的 Agent 产品，至少要区分四类人工介入：</p>
+      <ul>
+        <li><strong>意图确认：</strong>用于解决「你到底想让我做什么」。适合目标模糊、条件缺失、存在多种合理解释的任务。</li>
+        <li><strong>方案确认：</strong>Agent 先给出执行计划，用户确认方案后，它再继续。适合多步骤、耗时长、会调用多个系统的任务。</li>
+        <li><strong>动作确认：</strong>Agent 已经准备好参数，在真正调用工具前暂停。适合发邮件、退款、删除、发布、转账和修改权限等动作。</li>
+        <li><strong>结果复核：</strong>Agent 可以先完成任务，但结果进入待审核区，审核通过后才正式生效。适合内容审核、客服工单、合同提取、招聘筛选和批量数据处理。</li>
+      </ul>
+      <p>这比「一律自动」或「一律人工」更符合真实业务。</p>
+
+      <h3>六、产品经理可以直接使用的「确认节点五步法」</h3>
+      <ol>
+        <li><strong>列出 Agent 能做的所有真实动作。</strong>不要只画聊天流程，要列出工具清单。包括读取、创建、修改、删除、发送、发布、支付、授权、下载和调用外部系统。每一个能改变真实状态的动作，都要单独分析。</li>
+        <li><strong>给每个动作划分风险等级。</strong>可以使用一个简单公式：<em>风险等级 = 后果严重度 × 发生概率 × 不可逆程度 × 影响范围</em>。不必追求数学精确，重点是让团队形成统一标准。低风险动作默认自动执行；中风险动作根据金额、数量或不确定性触发确认；高风险动作必须确认；极高风险动作直接禁止 Agent 执行。</li>
+        <li><strong>设计安全工作区。</strong>不要让 Agent 一开始就拿到全部权限。让它先在草稿箱、测试环境、临时目录、沙箱账号或指定数据范围内工作。边界越清楚，用户需要处理的确认越少。确认机制和权限隔离必须一起设计，不能把所有安全责任都推给一个弹窗。</li>
+        <li><strong>让确认信息可读、可改、可追溯。</strong>确认页要展示动作、对象、依据、影响和可逆性。同时记录谁在什么时候批准了什么参数。后续发生问题时，团队必须能还原当时的 Agent 建议、用户选择和实际执行结果。</li>
+        <li><strong>持续检查确认是否有效。</strong>上线后不要只看确认通过率。还要看用户是否修改了参数，哪些确认总被直接通过，哪些动作经常被拒绝，用户是否因为提示太多而批量授权，哪些错误在确认阶段被拦截。如果某类确认几乎总被直接通过，可能说明它没有必要，也可能说明信息写得太差，用户根本看不懂。要结合停留时间、修改行为和事故记录判断。</li>
+      </ol>
+
+      <h3>结语：好的 Agent，不是替人决定一切</h3>
+      <p>Agent 正在从「帮用户生成内容」，走向「替用户完成工作」。</p>
+      <p>这条路上，最容易被高估的是模型能力，最容易被低估的是行动后果。</p>
+      <p>产品经理不能把「自动完成」当成唯一目标。真正应该追求的是：低风险工作足够快，高风险动作不会失控，用户始终知道系统在做什么。</p>
+      <p>人工确认也不是让人重新完成一遍机器的工作。它应该把人的注意力留给最需要判断的几个瞬间：目标是否理解正确，执行范围是否可以接受，后果是否愿意承担，身份是否允许这样做。</p>
+      <p>Agent 可以负责搜索、计算、整理、填写和准备。</p>
+      <p>但在涉及金钱、声誉、隐私、权利和不可逆结果时，最后一次决定应该留给人。</p>
+      <p>不是因为机器永远不可信，而是因为真正的信任，从来不是放弃控制。</p>
+      <p><strong>一个优秀的 Agent，不是从不打扰用户，而是只在必须由用户决定的时候停下来。</strong></p>
+    </div>
+  </dialog>
+
+  <dialog class="article-modal" id="article-3">
+    <button class="modal-close" aria-label="关闭">×</button>
+    <div class="article-detail-header">
+      <span class="article-detail-no">03</span>
+      <span class="pill">Evaluation</span>
+    </div>
+    <h2>从模型指标到产品指标：AI 产品如何评测</h2>
+    <div class="article-detail-body">
+      <p>一个 AI 产品最危险的时刻，不是模型答错了，而是团队根本不知道它为什么错，也不知道下一版该改什么。</p>
+      <p>过去做移动互联网产品，页面改版看点击率，推荐策略调整看播放时长，支付流程变化看转化率。指标不一定完美，但至少结果相对稳定。</p>
+      <p>AI 产品完全不同。</p>
+      <p>同一个问题，模型可能连续给出不同答案；模型排行榜上涨了，用户却未必更愿意使用；演示时看起来无所不能，接入真实业务后却频繁出错。更麻烦的是，AI 有时会用非常肯定的语气，说出一段根本不存在的事实。</p>
+      <p>所以，AI 产品不能只看模型跑分，也不能照搬传统互联网的指标体系。</p>
+      <p><strong>模型指标回答「它理论上有多强」，产品指标回答「它在真实场景中到底有没有用」。</strong></p>
+      <p>真正成熟的 AI 产品团队，必须把这两类指标连接起来。</p>
+
+      <h3>一、模型分数高，不代表产品好用</h3>
+      <p>AI 团队最常见的误区，是把「模型能力」直接等同于「用户价值」。</p>
+      <p>模型在数学、代码、知识问答等公开测试中得分高，只能说明它在特定数据、特定提示词和特定评分方式下表现较好，不能证明它适合客服、办公、教育、搜索或销售场景。</p>
+      <p>例如，一家电商公司要做售后客服助手，用户真正关心的不是模型会不会解奥数题，而是：</p>
+      <ul>
+        <li>能不能识别订单状态；</li>
+        <li>能不能正确理解退款规则；</li>
+        <li>会不会承诺平台根本无法提供的赔偿；</li>
+        <li>信息不完整时会不会先追问；</li>
+        <li>需要人工处理时能不能及时转接。</li>
+      </ul>
+      <p>这些问题，大多数不会直接出现在模型排行榜里。</p>
+      <p>因此，AI 产品评测的第一条原则是：</p>
+      <p><strong>不要先问模型有多聪明，先问用户要用它完成什么任务。</strong></p>
+
+      <h3>二、AI 产品至少要看五层指标</h3>
+      <p>很多团队的评测表只有一列：「回答是否正确」。</p>
+      <p>这远远不够。</p>
+      <p>一个真正可用的 AI 产品，至少要同时看五层指标：模型能力、任务结果、用户体验、商业价值和安全边界。</p>
+
+      <h4>1. 模型能力：它到底会不会</h4>
+      <p>这一层主要看模型有没有完成任务的基本能力。</p>
+      <p>常见指标包括准确率、召回率、精确率、事实正确性、指令遵循、推理正确率、工具调用准确率等。</p>
+      <p>但不同业务，重点完全不同。</p>
+      <p>例如，内容审核中，如果漏掉一条高风险内容的代价很大，就不能只看总体准确率，而要重点看召回率。知识库问答中，也不能只看最终答案「像不像对的」，而要拆开看：</p>
+      <ul>
+        <li>有没有找到正确资料；</li>
+        <li>有没有忠实使用资料；</li>
+        <li>最终回答有没有解决问题。</li>
+      </ul>
+      <p>否则，一旦产品出错，团队只能笼统地说「模型不行」，却无法判断应该换模型、改提示词、优化知识库，还是调整检索策略。</p>
+
+      <h4>2. 任务结果：用户的事情办成了吗</h4>
+      <p>模型指标关注输出，任务指标关注结果。</p>
+      <p>例如：</p>
+      <ul>
+        <li>AI 客服是否解决了问题；</li>
+        <li>AI 搜索是否帮助用户找到信息；</li>
+        <li>AI 编程助手生成的代码是否通过测试；</li>
+        <li>AI 会议助手是否正确提取了结论和待办；</li>
+        <li>AI Agent 是否真正完成了查询、预订、退款或提交。</li>
+      </ul>
+      <p>对于 Agent 产品，尤其不能只看回复写得好不好。一个订票 Agent 即使说话很礼貌，只要日期选错、城市选错或者订单没有真正提交，任务就是失败的。</p>
+      <p>因此，产品经理必须把「成功」写清楚。以会议纪要助手为例，不能只写「总结质量高」，而应该写成：</p>
+      <ul>
+        <li>正确识别参会人；</li>
+        <li>提取明确决策；</li>
+        <li>不把讨论意见写成最终结论；</li>
+        <li>待办事项包含负责人；</li>
+        <li>不虚构会议中没有的信息；</li>
+        <li>用户修改时间不超过两分钟。</li>
+      </ul>
+      <p>条件越具体，团队越容易定位问题。</p>
+
+      <h4>3. 用户体验：用户愿不愿意继续用</h4>
+      <p>答案正确，不代表体验好。</p>
+      <p>用户可能要等十几秒才能看到结果，也可能需要反复修改提示词，或者面对一大段看似完整但抓不住重点的回复。</p>
+      <p>因此，AI 产品还需要观察：</p>
+      <ul>
+        <li>首次有效结果率；</li>
+        <li>平均重试次数；</li>
+        <li>用户修改比例；</li>
+        <li>任务完成时间；</li>
+        <li>首字延迟和总响应时间；</li>
+        <li>复制、采纳、发送比例；</li>
+        <li>中途退出率；</li>
+        <li>转人工比例。</li>
+      </ul>
+      <p>其中，「用户修改了多少」往往比点赞更有价值。用户可能懒得点差评，却会默默删除一半内容；也可能没有点赞，但直接复制、发送或执行了结果。行为通常比态度更真实。</p>
+      <p>以 AI 写作为例，生成次数高没有太大意义。真正有价值的是：生成内容最终保留了多少，用户改了多少字，是否完成发布，使用 AI 后是否真的节省了时间。</p>
+
+      <h4>4. 商业价值：创造的价值是否大于成本</h4>
+      <p>AI 产品不是模型演示，也不是技术展览。</p>
+      <p>即使用户喜欢，如果每次调用成本太高，或者需要大量人工复核，产品仍然难以长期运行。</p>
+      <p>需要重点看：</p>
+      <ul>
+        <li>单次任务调用成本；</li>
+        <li>单个成功任务成本；</li>
+        <li>人工复核成本；</li>
+        <li>人工处理时间减少了多少；</li>
+        <li>收入、留存或付费是否提升；</li>
+        <li>错误导致的退款、投诉和赔偿成本。</li>
+      </ul>
+      <p>这里最容易出现一种假繁荣：调用量增长很快，但商业价值没有增长。用户可能只是反复生成内容，却没有真正完成任务；也可能调用次数越多，成本越高，最后仍然需要人工处理。</p>
+      <p>所以，AI 产品不能只看「用了多少次」，而要看：<strong>每完成一个有效任务，我们花了多少钱，创造了多少价值。</strong></p>
+
+      <h4>5. 安全边界：最坏的错误是否可控</h4>
+      <p>AI 产品的风险，往往集中在少量高危场景中。</p>
+      <p>普通聊天答错一句，和医疗建议、金融操作、企业数据泄露中的错误，后果完全不同。</p>
+      <p>安全评测需要重点看：</p>
+      <ul>
+        <li>高风险错误率；</li>
+        <li>敏感信息泄露率；</li>
+        <li>越权工具调用率；</li>
+        <li>虚假承诺率；</li>
+        <li>无依据生成事实的比例；</li>
+        <li>提示词攻击成功率；</li>
+        <li>应转人工却未转人工的比例。</li>
+      </ul>
+      <p>对于高风险业务，还必须设置「一票否决指标」。例如，生成虚假法律条款、未经确认执行转账、泄露其他用户数据，这些问题不能和响应速度、文案质量做平均。安全底线不是用来加权的。</p>
+
+      <h3>三、不要迷信一种评测方式</h3>
+      <p>AI 产品常见的评测方式有四种：规则评分、人工评审、模型评分和线上实验。</p>
+
+      <h4>规则评分</h4>
+      <p>规则适合检查格式、字段、长度、关键词、工具参数和确定性答案。例如 JSON 是否正确、手机号是否脱敏、SQL 是否执行成功。优点是便宜、稳定、可批量运行；缺点是很难判断回答是否真正有帮助。</p>
+
+      <h4>人工评审</h4>
+      <p>涉及专业知识、复杂判断和表达质量时，人工评审仍然不可替代。但人工评审不能只是「找几个人看看」。需要明确评分标准，提供正反例，让多人独立打分，并记录错误原因。如果评审员经常意见不一致，往往说明评测标准写得不清楚。</p>
+
+      <h4>模型评分</h4>
+      <p>用强模型评价其他模型，已经成为常见方法。它适合大规模筛选和版本比较，但也会偏爱长回答，受答案顺序影响，甚至偏爱和自己表达方式接近的内容。所以，模型评委不能直接当成最终裁判。更稳妥的做法是：先由业务专家标注一批样本，再让模型评分，比较两者分歧，持续校准评分标准，并定期人工抽查。</p>
+
+      <h4>线上实验</h4>
+      <p>A/B 测试最接近真实用户价值，可以看任务完成、使用频率、留存和付费变化。但线上实验不能替代离线评测，尤其不能拿真实用户测试高风险错误。正确顺序应该是：<strong>离线测试、内部测试、灰度发布、线上实验、持续监控。</strong></p>
+
+      <h3>四、一套团队可以直接执行的评测流程</h3>
+      <p>AI 评测不能只在上线前做一次，而应成为每次版本修改都会运行的机制。</p>
+
+      <h4>第一步：写清产品承诺</h4>
+      <p>先回答一句话：<strong>这个 AI 功能，替谁，在什么情况下，完成什么任务？</strong></p>
+      <p>例如：「帮助一线客服根据订单和平台规则，在三分钟内给出准确、可执行的售后方案。」如果产品承诺都说不清，评测最后一定会变成「感觉还不错」。</p>
+
+      <h4>第二步：建立真实任务集</h4>
+      <p>评测数据不要只靠产品经理凭空编写，而应该来自：真实对话、搜索日志、客服工单、用户修改记录、历史投诉、人工处理案例和线上失败请求。</p>
+      <p>任务集至少要包括：</p>
+      <ul>
+        <li>高频普通任务；</li>
+        <li>低频高风险任务；</li>
+        <li>边界和歧义任务；</li>
+        <li>过去出现过的错误任务。</li>
+      </ul>
+      <p>每次线上出现新问题，都应脱敏后加入回归测试集。</p>
+
+      <h4>第三步：定义通过和失败条件</h4>
+      <p>每个任务都要写清：什么算通过，什么算失败，失败有多严重。例如，客服回答中：正确引用退款规则，算通过；漏掉非关键说明，算一般错误；承诺不存在的赔偿，算严重错误；泄露其他用户订单，属于不可接受错误。</p>
+      <p>不要只看平均总分，因为总分很容易掩盖严重问题。</p>
+
+      <h4>第四步：拆开整条系统链路</h4>
+      <p>AI 产品通常不是一个模型，而是一条完整链路：用户输入、意图识别、资料检索、提示词组装、模型生成、工具调用、结果展示。每一步都要记录。回答错误时，团队要知道到底是没找到资料、理解错意图、工具参数错误，还是模型自己编造了内容。评测对象不是模型，而是整个产品系统。</p>
+
+      <h4>第五步：先做小规模高质量标注</h4>
+      <p>初期可以先准备100至300条核心样本，让业务专家认真标注。样本数量不必一开始就很大，但标准必须可靠。再用规则和模型评委扩展到更大规模，同时持续抽样检查。</p>
+
+      <h4>第六步：设置明确上线门槛</h4>
+      <p>不要写「整体效果有所提升」，而要写成具体条件，例如：</p>
+      <ul>
+        <li>核心任务成功率不低于90%；</li>
+        <li>严重事实错误率低于0.5%；</li>
+        <li>高风险任务必须触发人工复核；</li>
+        <li>响应时间不能超过业务上限；</li>
+        <li>单个成功任务成本不能超出预算；</li>
+        <li>新版本的关键指标不能比旧版本下降。</li>
+      </ul>
+      <p>具体数字需要结合自己的业务风险确定，不能照抄其他公司。</p>
+
+      <h4>第七步：上线后持续收集失败样本</h4>
+      <p>上线后要持续关注：用户重试、用户修改、差评投诉、转人工、工具失败、高成本请求、安全拦截和异常长回复。然后把问题分类：数据问题、检索问题、提示词问题、模型问题、工具问题，还是产品设计问题。只有完成错误归因，团队才知道下一步改什么。</p>
+
+      <h3>五、AI 产品评测最容易踩的坑</h3>
+      <ul>
+        <li><strong>第一个坑</strong>，只测表达清楚的「标准用户」。真实用户会打错字、说半句话、使用黑话，也会中途改变需求。</li>
+        <li><strong>第二个坑</strong>，只测回答，不测追问和拒绝。好的 AI 不是什么都答，而是知道什么时候需要补充信息，什么时候必须转人工。</li>
+        <li><strong>第三个坑</strong>，用点赞率代表质量。点赞只能参考，更应该看采纳、修改、重试和任务完成。</li>
+        <li><strong>第四个坑</strong>，修改提示词后只测试几个案例。生成式模型很容易修好一个问题，又弄坏另一个问题，每次修改都必须跑固定回归集。</li>
+        <li><strong>第五个坑</strong>，把评测全部交给算法团队。算法可以测准确率，工程可以测延迟，但「用户的事情是否办成」「哪些错误不能接受」，必须由产品、业务、运营和安全团队共同定义。</li>
+      </ul>
+
+      <h3>结语：AI 产品的竞争，最终是评测能力的竞争</h3>
+      <p>模型会越来越强，也会越来越便宜。单纯接入一个新模型带来的领先，不会持续太久。</p>
+      <p>真正拉开团队差距的，是谁能更早知道：用户真正要完成什么，产品在哪些场景最容易失败，哪些错误可以接受，哪些错误绝不能发生，新版本到底解决了什么，又牺牲了什么。</p>
+      <p>一个团队可以从最小版本开始：先找出50条真实任务，写清通过条件和严重错误，安排业务专家完成标注；此后每次修改模型、提示词、知识库或工具，都重新跑一遍；上线后，再把用户重试、修改、投诉和转人工案例持续补充进去。</p>
+      <p>当团队能够稳定回答「这一版为什么更好」，AI 产品才算真正进入可控迭代。</p>
+      <p>否则，再强的模型，也只是一个随时可能在真实业务中失手的演示程序。</p>
+    </div>
+  </dialog>
+
+  <dialog class="case-modal" id="demo-diagnosis">
+    <button class="modal-close" aria-label="关闭">×</button>
+    <span class="pill">AI 工作流 · 产品策略</span><h2>AI 产品方案诊断器</h2>
+    <div class="case-grid"><div><h3>Problem</h3><p>很多 AI 产品创意停留在“接入模型”，缺少明确用户、任务闭环、失败处理与评测标准。</p></div><div><h3>Insight</h3><p>与其直接生成一份完整 PRD，更有效的方式是通过连续追问，帮助用户补齐关键决策。</p></div><div><h3>AI Design</h3><p>Agent 按用户问题、AI 价值、工作流、人工确认、风险、评测与 MVP 七个模块推进，并输出结构化产品卡片。</p></div><div><h3>Evaluation</h3><p>关注信息完整率、建议采纳率、方案修改次数，以及用户完成产品定义所需时间。</p></div><div><h3>Failure Cases</h3><p>避免模型虚构市场事实；对不确定信息明确标记；对高风险自动化强制提示人工确认。</p></div><div><h3>Next Step</h3><p>加入行业模板、竞品研究入口和可协作的产品评审模式。</p></div></div>
+  </dialog>
+
   <script src="script.js"></script>
+
+  <!-- Dify AI Chatbot -->
+  <script>
+  window.difyChatbotConfig = {
+    token: 'uxrAAuzdTPEnBgvN',
+    onOpen: function() {
+      document.getElementById('assistantLauncher').style.display = 'none';
+    },
+    onClose: function() {
+      document.getElementById('assistantLauncher').style.display = 'flex';
+    },
+  }
+  </script>
+  <script src="https://udify.app/embed.min.js" id="uxrAAuzdTPEnBgvN" defer></script>
+
+  <style>
+  #dify-chatbot-bubble-button { display: none !important; }
+  </style>
 </body>
 </html>
