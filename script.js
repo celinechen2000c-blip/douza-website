@@ -1,535 +1,197 @@
-(function () {
-  'use strict';
+document.documentElement.classList.add('js-ready');
 
-  // ==================== Canvas 粒子动画 ====================
-  var width, height, largeHeader, canvas, ctx, points, target, animateHeader = true;
+document.addEventListener('DOMContentLoaded', () => {
+  const launcher = document.getElementById('assistantLauncher');
+  const panel = document.getElementById('assistantPanel');
+  const closeBtn = document.getElementById('assistantClose');
+  const messages = document.getElementById('assistantMessages');
+  const form = document.getElementById('assistantForm');
+  const input = document.getElementById('assistantInput');
+  const quickQuestions = document.getElementById('quickQuestions');
 
-  function initHeader() {
-    width = window.innerWidth;
-    height = window.innerHeight;
-    target = { x: width / 2, y: height / 2 };
+  const answers = {
+    'Bean 是一名什么样的产品经理？': 'Bean 是一名偏“产品思考 + 快速构建”的 AI 产品经理。她擅长从真实用户问题出发，判断是否应该使用 AI，并把模型能力、产品规则、交互反馈和评测指标组合成完整体验。',
+    '带我看看她最有代表性的 Demo': 'Bean 目前重点展示两个 Demo：\n\n1. AI 声音陪练师：面向老年人的诗词朗诵与语音陪伴产品，注重适老化设计与情感关怀。\n2. AI 产品方案诊断器：通过结构化对话帮助用户补齐 AI 产品方案，覆盖用户问题、AI 价值、风险评测与 MVP 定义四个模块。\n\n我已经带你跳转到 Demos 区域。',
+    '她如何设计 AI 产品？': '她通常按这条路径推进：\n\n场景判断 → 用户任务拆解 → AI 与规则分工 → 交互与人工确认 → 失败路径 → 评测指标 → 最小 Demo 验证。\n\n重点不是“接入一个模型”，而是让 AI 真正完成用户任务。',
+    '她有哪些项目经历？': '她目前展示的核心项目包括 AI 声音陪练师和 AI 产品方案诊断器，分别覆盖语音交互、适老化 AI 陪伴、Agent 工作流、风险设计和产品评测。更多内容可以在 About 和 Demos 中查看。',
+    '如何联系 Bean？': '你可以通过邮箱 celinechen2000c@gmail.com 联系 Bean，也可以访问她的 GitHub：github.com/celinechen2000c-blip。'
+  };
 
-    largeHeader = document.getElementById('large-header');
-    largeHeader.style.height = height + 'px';
-
-    canvas = document.getElementById('demo-canvas');
-    canvas.width = width;
-    canvas.height = height;
-    ctx = canvas.getContext('2d');
-
-    // 创建点阵
-    points = [];
-    for (var x = 0; x < width; x = x + width / 40) {
-      for (var y = 0; y < height; y = y + height / 40) {
-        var px = x + Math.random() * width / 40;
-        var py = y + Math.random() * height / 40;
-        var p = { x: px, originX: px, y: py, originY: py };
-        points.push(p);
-      }
-    }
-
-    // 为每个点找最近的 2 个点
-    for (var i = 0; i < points.length; i++) {
-      var closest = [];
-      var p1 = points[i];
-      for (var j = 0; j < points.length; j++) {
-        var p2 = points[j];
-        if (p1 === p2) continue;
-
-        var placed = false;
-        for (var k = 0; k < 2; k++) {
-          if (!placed) {
-            if (closest[k] === undefined) {
-              closest[k] = p2;
-              placed = true;
-            }
-          }
-        }
-
-        for (var kk = 0; kk < 2; kk++) {
-          if (!placed) {
-            if (getDistance(p1, p2) < getDistance(p1, closest[kk])) {
-              closest[kk] = p2;
-              placed = true;
-            }
-          }
-        }
-      }
-      p1.closest = closest;
-    }
-
-    // 为每个点分配一个圆
-    for (var ii = 0; ii < points.length; ii++) {
-      var c = new Circle(points[ii], 2 + Math.random() * 2, 'rgba(255,255,255,0.3)');
-      points[ii].circle = c;
-    }
-  }
-
-  function addListeners() {
-    if (!('ontouchstart' in window)) {
-      window.addEventListener('mousemove', mouseMove);
-    }
-    window.addEventListener('scroll', scrollCheck);
-    window.addEventListener('resize', resize);
-  }
-
-  function mouseMove(e) {
-    var posx, posy;
-    if (e.pageX || e.pageY) {
-      posx = e.pageX;
-      posy = e.pageY;
-    } else if (e.clientX || e.clientY) {
-      posx = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-      posy = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
-    }
-    target.x = posx;
-    target.y = posy;
-  }
-
-  function scrollCheck() {
-    if (document.body.scrollTop > height) animateHeader = false;
-    else animateHeader = true;
-  }
-
-  function resize() {
-    width = window.innerWidth;
-    height = window.innerHeight;
-    largeHeader.style.height = height + 'px';
-    canvas.width = width;
-    canvas.height = height;
-  }
-
-  function animate() {
-    if (animateHeader) {
-      ctx.clearRect(0, 0, width, height);
-      for (var i = 0; i < points.length; i++) {
-        var p = points[i];
-        if (Math.abs(getDistance(target, p)) < 200) {
-          p.active = 0.2;
-          p.circle.active = 0.4;
-        } else if (Math.abs(getDistance(target, p)) < 800) {
-          p.active = 0.06;
-          p.circle.active = 0.15;
-        } else if (Math.abs(getDistance(target, p)) < 1600) {
-          p.active = 0.01;
-          p.circle.active = 0.04;
-        } else {
-          p.active = 0;
-          p.circle.active = 0;
-        }
-
-        drawLines(p);
-        p.circle.draw();
-      }
-    }
-    requestAnimationFrame(animate);
-  }
-
-  // 用原生 JS 替代 TweenLite 实现点位漂移
-  function shiftPoint(p) {
-    var duration = 5000 + 5000 * Math.random();
-    var startX = p.x;
-    var startY = p.y;
-    var targetX = p.originX - 50 + Math.random() * 100;
-    var targetY = p.originY - 50 + Math.random() * 100;
-    var startTime = performance.now();
-
-    function step(now) {
-      var elapsed = now - startTime;
-      var progress = Math.min(elapsed / duration, 1);
-      // easeInOut 缓动
-      var t = progress < 0.5
-        ? 2 * progress * progress
-        : -1 + (4 - 2 * progress) * progress;
-
-      p.x = startX + (targetX - startX) * t;
-      p.y = startY + (targetY - startY) * t;
-
-      if (progress < 1) {
-        requestAnimationFrame(step);
-      } else {
-        shiftPoint(p);
-      }
-    }
-
-    requestAnimationFrame(step);
-  }
-
-  function drawLines(p) {
-    if (!p.active) return;
-    for (var i = 0; i < p.closest.length; i++) {
-      ctx.beginPath();
-      ctx.moveTo(p.x, p.y);
-      ctx.lineTo(p.closest[i].x, p.closest[i].y);
-      ctx.strokeStyle = 'rgba(156,217,249,' + p.active + ')';
-      ctx.stroke();
-    }
-  }
-
-  function Circle(pos, rad, color) {
-    var _this = this;
-    _this.pos = pos || null;
-    _this.radius = rad || null;
-    _this.color = color || null;
-
-    this.draw = function () {
-      if (!_this.active) return;
-      ctx.beginPath();
-      ctx.arc(_this.pos.x, _this.pos.y, _this.radius, 0, 2 * Math.PI, false);
-      ctx.fillStyle = 'rgba(156,217,249,' + _this.active + ')';
-      ctx.fill();
-    };
-  }
-
-  function getDistance(p1, p2) {
-    return Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2);
-  }
-
-  // ==================== 时钟更新 ====================
-  var timeElm = document.getElementById('time');
-
-  function pad(val) {
-    return val < 10 ? '0' + val : val;
-  }
-
-  function updateClock() {
-    var time = new Date();
-    var hours = time.getHours();
-    var minutes = time.getMinutes();
-    var seconds = time.getSeconds();
-
-    timeElm.setAttribute('data-hours', pad(hours));
-    timeElm.setAttribute('data-minutes', pad(minutes));
-    timeElm.setAttribute('data-seconds', pad(seconds));
-  }
-
-  // 初始化时钟
-  updateClock();
-  setInterval(updateClock, 1000);
-
-  // ==================== 鼠标追踪 → 3D 旋转 ====================
-  var doc = document.documentElement;
-  var clientWidth, clientHeight;
-  var mouseX = 0;
-  var mouseY = 0;
-  var currentMX = 0;
-  var currentMY = 0;
-
-  function updateSize() {
-    clientWidth = doc.clientWidth || window.innerWidth;
-    clientHeight = doc.clientHeight || window.innerHeight;
-  }
-  updateSize();
-
-  document.addEventListener('mousemove', function (e) {
-    if (!clientWidth || !clientHeight) updateSize();
-    mouseX = (clientWidth / 2 - e.clientX) / clientWidth;
-    mouseY = (clientHeight / 2 - e.clientY) / clientHeight;
-  });
-
-  // 使用 requestAnimationFrame 做平滑插值
-  function updateMouseTracking() {
-    currentMX += (mouseX - currentMX) * 0.2;
-    currentMY += (mouseY - currentMY) * 0.2;
-
-    if (timeElm) {
-      timeElm.style.setProperty('--mouse-x', currentMX);
-      timeElm.style.setProperty('--mouse-y', currentMY);
-    }
-
-    requestAnimationFrame(updateMouseTracking);
-  }
-
-  requestAnimationFrame(updateMouseTracking);
-  window.addEventListener('resize', updateSize);
-
-  // ==================== 微信二维码弹窗 ====================
-  var wechatButton = document.getElementById('wechat-button');
-  var qrPopup = document.getElementById('wechat-qrcode-popup');
-
-  function setQrVisible(visible) {
-    qrPopup.classList.toggle('visible', visible);
-    qrPopup.setAttribute('aria-hidden', String(!visible));
-  }
-
-  wechatButton.addEventListener('mouseenter', function () { setQrVisible(true); });
-  wechatButton.addEventListener('mouseleave', function () { setQrVisible(false); });
-  wechatButton.addEventListener('focus', function () { setQrVisible(true); });
-  wechatButton.addEventListener('blur', function () { setQrVisible(false); });
-  qrPopup.addEventListener('mouseleave', function () { setQrVisible(false); });
-
-  // ==================== 启动 ====================
-  function startApp() {
-    if (window.innerWidth === 0 || window.innerHeight === 0) {
-      // 等待布局完成
-      requestAnimationFrame(startApp);
+  const openAssistant = () => {
+    // 使用 Dify 聊天机器人
+    if (window.difyChatbot && typeof window.difyChatbot.open === 'function') {
+      window.difyChatbot.open();
       return;
     }
-    initHeader();
-    initAnimation();
-    addListeners();
-  }
+    // 兜底：如果 Dify 未加载，回退到原有面板
+    panel.classList.add('open');
+    panel.setAttribute('aria-hidden', 'false');
+    launcher.style.display = 'none';
+  };
 
-  startApp();
+  const closeAssistant = () => {
+    panel.classList.remove('open');
+    panel.setAttribute('aria-hidden', 'true');
+    launcher.style.display = 'flex';
+  };
 
-  function initAnimation() {
-    animate();
-    for (var i = 0; i < points.length; i++) {
-      shiftPoint(points[i]);
-    }
-  }
+  const addMessage = (text, type) => {
+    const el = document.createElement('div');
+    el.className = `message ${type}`;
+    el.textContent = text;
+    messages.appendChild(el);
+    messages.scrollTop = messages.scrollHeight;
+  };
 
-  // ==================== 聊天面板交互 ====================
-  var chatTrigger = document.getElementById('agent-chat-trigger');
-  var chatPanel = document.getElementById('chat-panel');
-  var chatOverlay = document.getElementById('chat-overlay');
-  var chatCloseBtn = document.getElementById('chat-panel-close');
-  var chatMessages = document.getElementById('chat-messages');
-  var chatInput = document.getElementById('chat-input');
-  var chatSend = document.getElementById('chat-send');
-  var isChatOpen = false;
-  var conversationId = '';
-  var isStreaming = false;
+  const getAnswer = (question) => {
+    if (answers[question]) return answers[question];
+    const q = question.toLowerCase();
+    if (q.includes('demo') || q.includes('项目')) return answers['带我看看她最有代表性的 Demo'];
+    if (q.includes('联系') || q.includes('邮箱') || q.includes('微信')) return answers['如何联系 Bean？'];
+    if (q.includes('设计') || q.includes('方法') || q.includes('流程')) return answers['她如何设计 AI 产品？'];
+    if (q.includes('产品经理') || q.includes('bean')) return answers['Bean 是一名什么样的产品经理？'];
+    return '这个问题目前还没有预设答案。你可以点击上面的推荐问题，或通过邮箱直接联系 Bean。';
+  };
 
-  // Dify API 配置
-  var API_URL = 'https://api.dify.ai/v1/chat-messages';
-  var API_KEY = 'app-vjTvHKAgnDwU8kTf0d2yldqK';
-
-  function openPanel() {
-    if (isChatOpen) return;
-    isChatOpen = true;
-    chatPanel.classList.add('visible');
-    chatOverlay.classList.add('visible');
-    chatPanel.setAttribute('aria-hidden', 'false');
-    chatOverlay.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-    setTimeout(function () { chatInput.focus(); }, 400);
-  }
-
-  function closePanel() {
-    if (!isChatOpen) return;
-    if (document.activeElement) document.activeElement.blur();
-    isChatOpen = false;
-    chatPanel.classList.remove('visible');
-    chatOverlay.classList.remove('visible');
-    chatPanel.setAttribute('aria-hidden', 'true');
-    chatOverlay.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-    // 关闭时重置对话
-    conversationId = '';
-  }
-
-  // ---- 消息渲染 ----
-
-  function addMessage(role, text) {
-    var bubble = document.createElement('div');
-    bubble.className = 'chat-bubble ' + role;
-
-    // 只有 Agent 消息显示头像
-    if (role !== 'user') {
-      var avatar = document.createElement('img');
-      avatar.className = 'chat-bubble-avatar';
-      avatar.src = '人物形象.png';
-      avatar.alt = '';
-      bubble.appendChild(avatar);
-    }
-
-    var textEl = document.createElement('div');
-    textEl.className = 'chat-bubble-text';
-    textEl.textContent = text;
-
-    bubble.appendChild(textEl);
-    chatMessages.appendChild(bubble);
-    scrollToBottom();
-    return textEl;
-  }
-
-  function addTypingIndicator() {
-    var bubble = document.createElement('div');
-    bubble.className = 'chat-bubble agent';
-    bubble.id = 'typing-indicator';
-
-    var avatar = document.createElement('img');
-    avatar.className = 'chat-bubble-avatar';
-    avatar.src = '人物形象.png';
-    avatar.alt = '';
-
-    var dots = document.createElement('div');
-    dots.className = 'chat-bubble-text';
-    dots.innerHTML = '<div class="chat-typing"><span></span><span></span><span></span></div>';
-
-    bubble.appendChild(avatar);
-    bubble.appendChild(dots);
-    chatMessages.appendChild(bubble);
-    scrollToBottom();
-  }
-
-  function removeTypingIndicator() {
-    var el = document.getElementById('typing-indicator');
-    if (el) el.remove();
-  }
-
-  function scrollToBottom() {
-    requestAnimationFrame(function () {
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    });
-  }
-
-  // ---- 发送消息 ----
-
-  function sendMessage() {
-    if (isStreaming) return;
-    var text = chatInput.value.trim();
-    if (!text) return;
-
-    // 显示用户气泡
-    addMessage('user', text);
-    chatInput.value = '';
-    chatInput.style.height = 'auto';
-    setSendingState(true);
-
-    // 显示打字动画
-    addTypingIndicator();
-
-    // 调用 API
-    var body = {
-      inputs: {},
-      query: text,
-      response_mode: 'streaming',
-      user: 'website-visitor'
-    };
-    if (conversationId) {
-      body.conversation_id = conversationId;
-    }
-
-    fetch(API_URL, {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + API_KEY,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    }).then(function (response) {
-      if (!response.ok) {
-        throw new Error('API 错误: ' + response.status);
+  const reply = (question) => {
+    addMessage(question, 'user');
+    window.setTimeout(() => {
+      addMessage(getAnswer(question), 'bot');
+      if (question.toLowerCase().includes('demo')) {
+        document.getElementById('demos')?.scrollIntoView({ behavior: 'smooth' });
       }
-      return handleStream(response);
-    }).catch(function (err) {
-      removeTypingIndicator();
-      addMessage('agent', '抱歉，出错了：' + err.message);
-      setSendingState(false);
+    }, 300);
+  };
+
+  launcher?.addEventListener('click', openAssistant);
+  closeBtn?.addEventListener('click', closeAssistant);
+  quickQuestions?.addEventListener('click', (event) => {
+    const button = event.target.closest('button');
+    if (button) reply(button.textContent.trim());
+  });
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const question = input.value.trim();
+    if (!question) return;
+    input.value = '';
+    reply(question);
+  });
+
+  document.querySelectorAll('[data-modal]').forEach((button) => {
+    button.addEventListener('click', () => {
+      document.getElementById(button.dataset.modal)?.showModal();
+    });
+  });
+
+  document.querySelectorAll('.case-modal, .article-modal').forEach((modal) => {
+    modal.querySelector('.modal-close')?.addEventListener('click', () => modal.close());
+    modal.addEventListener('click', (event) => {
+      if (event.target === modal) modal.close();
+    });
+  });
+
+  /* ====== 语音朗诵 ====== */
+  const poemBtn = document.getElementById('poemPlayBtn');
+  const poemWave = document.getElementById('poemWave');
+  if (poemBtn) {
+    let isPlaying = false;
+    let activeAudio = null;
+    const poemLines = [
+      '从明天起，做一个幸福的人。',
+      '喂马、劈柴，周游世界。',
+      '从明天起，关心粮食和蔬菜。',
+      '我有一所房子，',
+      '面朝大海，春暖花开。',
+    ];
+
+    /* 方案 A：同域 Vercel API 生成“云健”浑厚神经男声 */
+    const neuralTTS = async (text) => {
+      const response = await fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+      });
+      if (!response.ok) throw new Error(`TTS request failed: ${response.status}`);
+      const audioUrl = URL.createObjectURL(await response.blob());
+      return new Promise((resolve, reject) => {
+        const audio = new Audio(audioUrl);
+        activeAudio = audio;
+        const cleanup = () => {
+          URL.revokeObjectURL(audioUrl);
+          if (activeAudio === audio) activeAudio = null;
+        };
+        audio.onended = () => { cleanup(); resolve(); };
+        audio.onerror = () => { cleanup(); reject(new Error('Audio playback failed')); };
+        audio.play().catch((error) => { cleanup(); reject(error); });
+      });
+    };
+
+    const speakAll = async () => {
+      const text = poemLines.join('\n');
+      try {
+        await neuralTTS(text);
+      } catch (_) {
+        if (!isPlaying) return;
+        await new Promise(resolve => setTimeout(resolve, 800));
+        await neuralTTS(text);
+      }
+    };
+
+    const speakPoem = async () => {
+      if (isPlaying) {
+        activeAudio?.pause(); activeAudio = null;
+        speechSynthesis.cancel(); isPlaying = false;
+        poemBtn.textContent = '🔊 点击收听朗诵'; poemWave?.classList.remove('active');
+        return;
+      }
+      isPlaying = true;
+      poemBtn.textContent = '⏳ 正在生成朗诵'; poemWave?.classList.add('active');
+      try {
+        await speakAll();
+      } catch (_) {
+        isPlaying = false;
+        poemBtn.textContent = '朗诵加载失败，请重试';
+        poemWave?.classList.remove('active');
+        return;
+      }
+      isPlaying = false;
+      poemBtn.textContent = '🔊 点击收听朗诵'; poemWave?.classList.remove('active');
+    };
+
+    poemBtn.addEventListener('click', speakPoem);
+  }
+
+  /* ====== 诊断器侧边栏切换 ====== */
+  const diagSidebar = document.querySelector('.diag-sidebar');
+  if (diagSidebar) {
+    const diagButtons = diagSidebar.querySelectorAll('button[data-step]');
+    const diagPanels = document.querySelectorAll('.diag-panel[data-step]');
+    const diagProgress = document.querySelector('.diagnosis-grid .progress i');
+
+    diagButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const step = btn.dataset.step;
+        diagButtons.forEach((b) => b.classList.remove('active'));
+        diagPanels.forEach((p) => p.classList.remove('active'));
+        btn.classList.add('active');
+        const targetPanel = document.querySelector(`.diag-panel[data-step="${step}"]`);
+        if (targetPanel) targetPanel.classList.add('active');
+        if (diagProgress) diagProgress.style.width = `${(parseInt(step) / 4) * 100}%`;
+      });
     });
   }
 
-  function handleStream(response) {
-    isStreaming = true;
-    var reader = response.body.getReader();
-    var decoder = new TextDecoder();
-    var buffer = '';
-    var answerEl = null;
-
-    function processChunk() {
-      reader.read().then(function (result) {
-        if (result.done) {
-          isStreaming = false;
-          setSendingState(false);
-          return;
-        }
-
-        buffer += decoder.decode(result.value, { stream: true });
-        var lines = buffer.split('\n');
-        // 保留最后不完整的行
-        buffer = lines.pop() || '';
-
-        for (var i = 0; i < lines.length; i++) {
-          var line = lines[i].trim();
-          if (!line || !line.startsWith('data: ')) continue;
-
-          try {
-            var json = JSON.parse(line.slice(6));
-            var event = json.event;
-
-            if (event === 'agent_message') {
-              if (!answerEl) {
-                removeTypingIndicator();
-                answerEl = addMessage('agent', '');
-              }
-              if (json.answer) {
-                answerEl.textContent += json.answer;
-                scrollToBottom();
-              }
-            }
-
-            if (event === 'message_end') {
-              if (json.conversation_id) {
-                conversationId = json.conversation_id;
-              }
-              isStreaming = false;
-              setSendingState(false);
-            }
-          } catch (e) {
-            // 忽略解析失败的行
-          }
-        }
-
-        if (isStreaming) {
-          processChunk();
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
         }
       });
-    }
-
-    processChunk();
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
+  } else {
+    document.querySelectorAll('.reveal').forEach((element) => element.classList.add('visible'));
   }
-
-  function setSendingState(sending) {
-    chatSend.disabled = sending;
-    chatInput.disabled = sending;
-    if (sending) {
-      chatInput.placeholder = '等待回复…';
-    } else {
-      chatInput.placeholder = '输入消息…';
-      chatInput.focus();
-    }
-  }
-
-  // ---- 输入框自适应高度 ----
-
-  function autoResize() {
-    chatInput.style.height = 'auto';
-    chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
-  }
-
-  chatInput.addEventListener('input', autoResize);
-
-  // ---- 事件绑定 ----
-
-  chatTrigger.addEventListener('click', function (e) {
-    e.preventDefault();
-    openPanel();
-  });
-
-  chatCloseBtn.addEventListener('click', function () {
-    closePanel();
-  });
-
-  chatOverlay.addEventListener('click', function () {
-    closePanel();
-  });
-
-  chatSend.addEventListener('click', function () {
-    sendMessage();
-  });
-
-  chatInput.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  });
-
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && isChatOpen) {
-      closePanel();
-    }
-  });
-})();
+});
