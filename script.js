@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     '带我看看她最有代表性的 Demo': 'Bean 目前重点展示两个 Demo：\n\n1. AI 声音陪练师：面向老年人的诗词朗诵与语音陪伴产品，注重适老化设计与情感关怀。\n2. AI 产品方案诊断器：通过结构化对话帮助用户补齐 AI 产品方案，覆盖用户问题、AI 价值、风险评测与 MVP 定义四个模块。\n\n我已经带你跳转到 Demos 区域。',
     '她如何设计 AI 产品？': '她通常按这条路径推进：\n\n场景判断 → 用户任务拆解 → AI 与规则分工 → 交互与人工确认 → 失败路径 → 评测指标 → 最小 Demo 验证。\n\n重点不是“接入一个模型”，而是让 AI 真正完成用户任务。',
     '她有哪些项目经历？': '她目前展示的核心项目包括 AI 声音陪练师和 AI 产品方案诊断器，分别覆盖语音交互、适老化 AI 陪伴、Agent 工作流、风险设计和产品评测。更多内容可以在 About 和 Demos 中查看。',
-    '如何联系 Bean？': '你可以通过邮箱 celinechen2000c@gmail.com 联系 Bean，也可以访问她的 GitHub：github.com/celinechen2000c-blip。'
+    '如何联系 Bean？': '你可以通过邮箱 hi@chendouzi.com 联系 Bean，也可以访问她的 GitHub：github.com/celinechen2000c-blip。'
   };
 
   const openAssistant = () => {
